@@ -127,14 +127,14 @@ export function DetailsPanel({
           </button>
         </div>
 
-        <Tabs defaultValue="react" className="space-y-4 lg:px-6">
+        <Tabs defaultValue="react" className="space-y-6 lg:px-6">
           <TabList>
             <TabTrigger value="react">React</TabTrigger>
             <TabTrigger value="vue">Vue</TabTrigger>
           </TabList>
 
-          <TabContent value="react" className="space-y-4">
-            <div className="space-y-2">
+          <TabContent value="react" className="space-y-6">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-neutral-700">Install</span>
                 <button
@@ -149,12 +149,12 @@ export function DetailsPanel({
                   )}
                 </button>
               </div>
-              <pre className="p-3 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
+              <pre className="p-4 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
                 <code>{reactInstallCmd}</code>
               </pre>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-neutral-700">Usage</span>
                 <button
@@ -169,14 +169,14 @@ export function DetailsPanel({
                   )}
                 </button>
               </div>
-              <pre className="p-3 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
+              <pre className="p-4 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
                 <code>{reactUsage}</code>
               </pre>
             </div>
           </TabContent>
 
-          <TabContent value="vue" className="space-y-4">
-            <div className="space-y-2">
+          <TabContent value="vue" className="space-y-6">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-neutral-700">Install</span>
                 <button
@@ -191,12 +191,12 @@ export function DetailsPanel({
                   )}
                 </button>
               </div>
-              <pre className="p-3 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
+              <pre className="p-4 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
                 <code>{vueInstallCmd}</code>
               </pre>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-neutral-700">Usage</span>
                 <button
@@ -211,7 +211,7 @@ export function DetailsPanel({
                   )}
                 </button>
               </div>
-              <pre className="p-3 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
+              <pre className="p-4 bg-neutral-100 rounded-lg text-sm overflow-x-auto">
                 <code>{vueUsage}</code>
               </pre>
             </div>
