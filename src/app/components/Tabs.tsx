@@ -1,40 +1,44 @@
-import { ReactNode, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 
 interface TabsProps {
   defaultValue: string;
   children: ReactNode;
+  className?: string;
 }
 
 interface TabListProps {
   children: ReactNode;
+  className?: string;
 }
 
 interface TabTriggerProps {
   value: string;
   children: ReactNode;
+  className?: string;
 }
 
 interface TabContentProps {
   value: string;
   children: ReactNode;
+  className?: string;
 }
 
 const TabContext = React.createContext<{ activeTab: string; setActiveTab: (value: string) => void } | null>(null);
 
-export function Tabs({ defaultValue, children }: TabsProps) {
+export function Tabs({ defaultValue, children, className = '' }: TabsProps) {
   const [activeTab, setActiveTab] = useState(defaultValue);
   return (
     <TabContext.Provider value={{ activeTab, setActiveTab }}>
-      <div>{children}</div>
+      <div className={className}>{children}</div>
     </TabContext.Provider>
   );
 }
 
-export function TabList({ children }: TabListProps) {
-  return <div className="flex gap-2 border-b border-neutral-200">{children}</div>;
+export function TabList({ children, className = '' }: TabListProps) {
+  return <div className={`flex gap-2 border-b border-neutral-200 ${className}`}>{children}</div>;
 }
 
-export function TabTrigger({ value, children }: TabTriggerProps) {
+export function TabTrigger({ value, children, className = '' }: TabTriggerProps) {
   const context = React.useContext(TabContext);
   const isActive = context?.activeTab === value;
 
@@ -45,19 +49,17 @@ export function TabTrigger({ value, children }: TabTriggerProps) {
         isActive
           ? 'border-neutral-900 text-neutral-900 font-medium'
           : 'border-transparent text-neutral-600 hover:text-neutral-900'
-      }`}
+      } ${className}`}
     >
       {children}
     </button>
   );
 }
 
-export function TabContent({ value, children }: TabContentProps) {
+export function TabContent({ value, children, className = '' }: TabContentProps) {
   const context = React.useContext(TabContext);
   if (context?.activeTab !== value) return null;
 
-  return <div className="space-y-4">{children}</div>;
+  return <div className={`space-y-4 ${className}`}>{children}</div>;
 }
-
-import React from 'react';
 
