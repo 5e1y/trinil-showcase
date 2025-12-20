@@ -30,20 +30,19 @@ export function MobileHeader({
             aria-label="Search icons"
           />
           {search && (
-            <Button
+            <button
               onClick={() => onSearchChange('')}
-              icon
-              className="absolute right-1 top-1/2 -translate-y-1/2"
+              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 text-neutral-400 hover:text-neutral-600"
               aria-label="Clear search"
             >
               ✕
-            </Button>
+            </button>
           )}
         </div>
         <Button
           onClick={() => window.open(githubUrl, '_blank')}
           variant="primary"
-          className="w-auto shrink-0"
+          className="shrink-0 h-10 !w-auto px-2"
         >
           <ExternalLink size={16} />
           <span>GitHub</span>
