@@ -1,4 +1,5 @@
 import React, { ReactNode, useState } from 'react';
+import { Button } from './Button';
 
 interface TabsProps {
   defaultValue: string;
@@ -43,16 +44,18 @@ export function TabTrigger({ value, children, className = '' }: TabTriggerProps)
   const isActive = context?.activeTab === value;
 
   return (
-    <button
+    <Button
       onClick={() => context?.setActiveTab(value)}
-      className={`px-4 py-2 text-sm border-b-2 transition-colors ${
+      variant={isActive ? 'secondary' : 'secondary'}
+      size="sm"
+      className={`border-b-2 rounded-none px-4 py-2 ${
         isActive
           ? 'border-neutral-900 text-neutral-900 font-medium'
-          : 'border-transparent text-neutral-600 hover:text-neutral-900'
+          : 'border-transparent text-neutral-600'
       } ${className}`}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

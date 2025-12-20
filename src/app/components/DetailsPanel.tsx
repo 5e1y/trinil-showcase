@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import { Download, Copy, Check } from 'trinil-react';
 import * as TrinilIcons from 'trinil-react';
-import { Tabs, TabList, TabTrigger, TabContent } from './Tabs';
 import { Button } from './Button';
+import { Select } from './Select';
 
 interface DetailsPanelProps {
   iconName: string;
@@ -25,6 +25,7 @@ export function DetailsPanel({
 }: DetailsPanelProps) {
   const iconPreviewRef = useRef<HTMLDivElement>(null);
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('react');
 
   const IconComponent = TrinilIcons[iconName as keyof typeof TrinilIcons] as React.ComponentType<{
     size?: number;
@@ -91,6 +92,7 @@ export function DetailsPanel({
         <Button
           onClick={onClose}
           icon
+          variant="secondary"
           aria-label="Close details panel"
         >
           ✕
@@ -167,6 +169,7 @@ export function DetailsPanel({
             <Button
               onClick={() => copyToClipboard(iconName, 'iconName')}
               icon
+              variant="secondary"
               aria-label="Copy icon name"
             >
               {copiedItem === 'iconName' ? (
@@ -177,97 +180,111 @@ export function DetailsPanel({
             </Button>
           </div>
 
-          {/* Tabs */}
-          <Tabs defaultValue="react" className="flex flex-col gap-4">
-            <TabList className="gap-0">
-              <TabTrigger value="react">React</TabTrigger>
-              <TabTrigger value="vue">Vue</TabTrigger>
-            </TabList>
+          {/* Code Snippets Section */}
+          <div className="flex flex-col gap-4">
+            <Select
+              value={selectedLanguage}
+              onValueChange={setSelectedLanguage}
+              options={[
+                { value: 'react', label: 'React' },
+                { value: 'vue', label: 'Vue' },
+              ]}
+            />
 
-            <TabContent value="react" className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm text-neutral-700 font-medium">Install</span>
-                  <Button
-                    onClick={() => copyToClipboard(reactInstallCmd, 'reactInstall')}
-                    icon
-                    aria-label="Copy install command"
-                  >
-                    {copiedItem === 'reactInstall' ? (
-                      <Check size={18} className="text-green-600" />
-                    ) : (
-                      <Copy size={18} />
-                    )}
-                  </Button>
-                </div>
-                <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                  <code className="text-neutral-900">{reactInstallCmd}</code>
-                </pre>
-              </div>
+            <div className="space-y-4">
+              {selectedLanguage === 'react' && (
+                <>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-neutral-700 font-medium">Install</span>
+                      <Button
+                        onClick={() => copyToClipboard(reactInstallCmd, 'reactInstall')}
+                        icon
+                        variant="secondary"
+                        aria-label="Copy install command"
+                      >
+                        {copiedItem === 'reactInstall' ? (
+                          <Check size={18} className="text-green-600" />
+                        ) : (
+                          <Copy size={18} />
+                        )}
+                      </Button>
+                    </div>
+                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
+                      <code className="text-neutral-900">{reactInstallCmd}</code>
+                    </pre>
+                  </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm text-neutral-700 font-medium">Usage</span>
-                  <Button
-                    onClick={() => copyToClipboard(reactUsage, 'reactUsage')}
-                    icon
-                    aria-label="Copy usage code"
-                  >
-                    {copiedItem === 'reactUsage' ? (
-                      <Check size={18} className="text-green-600" />
-                    ) : (
-                      <Copy size={18} />
-                    )}
-                  </Button>
-                </div>
-                <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                  <code className="text-neutral-900">{reactUsage}</code>
-                </pre>
-              </div>
-            </TabContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-neutral-700 font-medium">Usage</span>
+                      <Button
+                        onClick={() => copyToClipboard(reactUsage, 'reactUsage')}
+                        icon
+                        variant="secondary"
+                        aria-label="Copy usage code"
+                      >
+                        {copiedItem === 'reactUsage' ? (
+                          <Check size={18} className="text-green-600" />
+                        ) : (
+                          <Copy size={18} />
+                        )}
+                      </Button>
+                    </div>
+                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
+                      <code className="text-neutral-900">{reactUsage}</code>
+                    </pre>
+                  </div>
+                </>
+              )}
 
-            <TabContent value="vue" className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm text-neutral-700 font-medium">Install</span>
-                  <Button
-                    onClick={() => copyToClipboard(vueInstallCmd, 'vueInstall')}
-                    icon
-                    aria-label="Copy install command"
-                  >
-                    {copiedItem === 'vueInstall' ? (
-                      <Check size={18} className="text-green-600" />
-                    ) : (
-                      <Copy size={18} />
-                    )}
-                  </Button>
-                </div>
-                <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                  <code className="text-neutral-900">{vueInstallCmd}</code>
-                </pre>
-              </div>
+              {selectedLanguage === 'vue' && (
+                <>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-neutral-700 font-medium">Install</span>
+                      <Button
+                        onClick={() => copyToClipboard(vueInstallCmd, 'vueInstall')}
+                        icon
+                        variant="secondary"
+                        aria-label="Copy install command"
+                      >
+                        {copiedItem === 'vueInstall' ? (
+                          <Check size={18} className="text-green-600" />
+                        ) : (
+                          <Copy size={18} />
+                        )}
+                      </Button>
+                    </div>
+                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
+                      <code className="text-neutral-900">{vueInstallCmd}</code>
+                    </pre>
+                  </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm text-neutral-700 font-medium">Usage</span>
-                  <Button
-                    onClick={() => copyToClipboard(vueUsage, 'vueUsage')}
-                    icon
-                    aria-label="Copy usage code"
-                  >
-                    {copiedItem === 'vueUsage' ? (
-                      <Check size={18} className="text-green-600" />
-                    ) : (
-                      <Copy size={18} />
-                    )}
-                  </Button>
-                </div>
-                <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                  <code className="text-neutral-900">{vueUsage}</code>
-                </pre>
-              </div>
-            </TabContent>
-          </Tabs>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-neutral-700 font-medium">Usage</span>
+                      <Button
+                        onClick={() => copyToClipboard(vueUsage, 'vueUsage')}
+                        icon
+                        variant="secondary"
+                        aria-label="Copy usage code"
+                      >
+                        {copiedItem === 'vueUsage' ? (
+                          <Check size={18} className="text-green-600" />
+                        ) : (
+                          <Copy size={18} />
+                        )}
+                      </Button>
+                    </div>
+                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
+                      <code className="text-neutral-900">{vueUsage}</code>
+                    </pre>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

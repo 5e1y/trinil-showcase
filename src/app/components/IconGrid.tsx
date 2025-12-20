@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as TrinilIcons from 'trinil-react';
 import { Tooltip } from './Tooltip';
+import { Button } from './Button';
 
 interface IconGridProps {
   icons: string[];
@@ -56,25 +57,19 @@ export function IconGrid({
           const isSelected = selectedIcon === iconName;
 
           return (
-            <button
+            <Button
               key={iconName}
               onClick={() => onSelectIcon(iconName)}
               onMouseEnter={(e) => handleMouseEnter(iconName, e)}
               onMouseLeave={handleMouseLeave}
               onFocus={(e) => handleMouseEnter(iconName, e)}
               onBlur={handleMouseLeave}
-              className={`
-                flex items-center justify-center p-[12px] rounded-lg
-                transition-colors cursor-pointer aspect-square flex-grow
-                min-w-[72px] min-h-[72px] max-w-[96px] max-h-[96px]
-                focus:outline-none focus:ring-2 focus:ring-neutral-900
-                hover:bg-neutral-100
-                ${isSelected ? 'ring-2 ring-neutral-900' : ''}
-              `}
+              variant="secondary"
+              className={`!w-auto !h-auto aspect-square flex-grow min-w-[72px] min-h-[72px] max-w-[96px] max-h-[96px] p-3 ${isSelected ? 'ring-2 ring-neutral-900' : ''}`}
               aria-label={iconName}
             >
               {IconComponent && <IconComponent size={iconSize} color="#000000" />}
-            </button>
+            </Button>
           );
         })}
       </div>
