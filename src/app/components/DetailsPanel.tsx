@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Download, Copy, Check } from 'trinil-react';
 import * as TrinilIcons from 'trinil-react';
 import { Tabs, TabList, TabTrigger, TabContent } from './Tabs';
+import { Button } from './Button';
 
 interface DetailsPanelProps {
   iconName: string;
@@ -87,13 +88,13 @@ export function DetailsPanel({
       {/* Header */}
       <div className="h-16 border-b border-neutral-200 px-6 flex items-center justify-between shrink-0">
         <h2 className="font-semibold text-neutral-900">Details</h2>
-        <button
+        <Button
           onClick={onClose}
-          className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
-          aria-label="Close"
+          icon
+          aria-label="Close details panel"
         >
           ✕
-        </button>
+        </Button>
       </div>
 
       {/* Content - Scrollable */}
@@ -101,9 +102,51 @@ export function DetailsPanel({
         <div className="flex flex-col p-6 gap-6">
           {/* Icon Preview */}
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-center w-full aspect-square bg-neutral-50 rounded-lg" ref={iconPreviewRef}>
-              <IconComponent size={96} color="#000000" />
+            {/* Icon at 160px with 12x12 grid background */}
+            <div 
+              ref={iconPreviewRef}
+              className="mx-auto relative flex items-center justify-center"
+            >
+              {/* 12x12 Grid behind icon */}
+              <svg 
+                width="160" 
+                height="160" 
+                viewBox="0 0 12 12" 
+                className="absolute rounded-lg border border-neutral-200"
+                style={{ backgroundColor: '#ffffff' }}
+              >
+                {/* Vertical lines */}
+                {Array.from({ length: 13 }).map((_, i) => (
+                  <line 
+                    key={`v${i}`}
+                    x1={i} 
+                    y1="0" 
+                    x2={i} 
+                    y2="12" 
+                    stroke="#e5e7eb" 
+                    strokeWidth="0.05"
+                  />
+                ))}
+                {/* Horizontal lines */}
+                {Array.from({ length: 13 }).map((_, i) => (
+                  <line 
+                    key={`h${i}`}
+                    x1="0" 
+                    y1={i} 
+                    x2="12" 
+                    y2={i} 
+                    stroke="#e5e7eb" 
+                    strokeWidth="0.05"
+                  />
+                ))}
+              </svg>
+              
+              {/* Icon on top */}
+              <div className="relative z-10">
+                <IconComponent size={160} color="#000000" />
+              </div>
             </div>
+
             <div className="flex flex-col gap-1">
               <h3 className="font-semibold text-neutral-900 text-center">{iconName}</h3>
               <div className="text-center text-xs text-neutral-500">Size: {iconSize}px</div>
@@ -112,25 +155,26 @@ export function DetailsPanel({
 
           {/* Action Buttons */}
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={downloadSVG}
-              className="flex-1 flex items-center justify-center gap-2 h-10 px-4 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors font-medium"
+              variant="primary"
+              className="flex-1"
             >
               <Download size={20} />
               <span className="hidden sm:inline">Download SVG</span>
               <span className="sm:hidden">Download</span>
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => copyToClipboard(iconName, 'iconName')}
-              className="flex items-center justify-center h-10 px-3 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+              icon
               aria-label="Copy icon name"
             >
               {copiedItem === 'iconName' ? (
-                <Check size={20} className="text-green-600" />
+                <Check size={18} className="text-green-600" />
               ) : (
-                <Copy size={20} />
+                <Copy size={18} />
               )}
-            </button>
+            </Button>
           </div>
 
           {/* Tabs */}
@@ -144,17 +188,17 @@ export function DetailsPanel({
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm text-neutral-700 font-medium">Install</span>
-                  <button
+                  <Button
                     onClick={() => copyToClipboard(reactInstallCmd, 'reactInstall')}
-                    className="flex items-center justify-center h-8 px-2 border border-neutral-300 rounded hover:bg-neutral-50 transition-colors shrink-0"
+                    icon
                     aria-label="Copy install command"
                   >
                     {copiedItem === 'reactInstall' ? (
-                      <Check size={16} className="text-green-600" />
+                      <Check size={18} className="text-green-600" />
                     ) : (
-                      <Copy size={16} />
+                      <Copy size={18} />
                     )}
-                  </button>
+                  </Button>
                 </div>
                 <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
                   <code className="text-neutral-900">{reactInstallCmd}</code>
@@ -164,17 +208,17 @@ export function DetailsPanel({
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm text-neutral-700 font-medium">Usage</span>
-                  <button
+                  <Button
                     onClick={() => copyToClipboard(reactUsage, 'reactUsage')}
-                    className="flex items-center justify-center h-8 px-2 border border-neutral-300 rounded hover:bg-neutral-50 transition-colors shrink-0"
+                    icon
                     aria-label="Copy usage code"
                   >
                     {copiedItem === 'reactUsage' ? (
-                      <Check size={16} className="text-green-600" />
+                      <Check size={18} className="text-green-600" />
                     ) : (
-                      <Copy size={16} />
+                      <Copy size={18} />
                     )}
-                  </button>
+                  </Button>
                 </div>
                 <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
                   <code className="text-neutral-900">{reactUsage}</code>
@@ -186,17 +230,17 @@ export function DetailsPanel({
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm text-neutral-700 font-medium">Install</span>
-                  <button
+                  <Button
                     onClick={() => copyToClipboard(vueInstallCmd, 'vueInstall')}
-                    className="flex items-center justify-center h-8 px-2 border border-neutral-300 rounded hover:bg-neutral-50 transition-colors shrink-0"
+                    icon
                     aria-label="Copy install command"
                   >
                     {copiedItem === 'vueInstall' ? (
-                      <Check size={16} className="text-green-600" />
+                      <Check size={18} className="text-green-600" />
                     ) : (
-                      <Copy size={16} />
+                      <Copy size={18} />
                     )}
-                  </button>
+                  </Button>
                 </div>
                 <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
                   <code className="text-neutral-900">{vueInstallCmd}</code>
@@ -206,17 +250,17 @@ export function DetailsPanel({
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm text-neutral-700 font-medium">Usage</span>
-                  <button
+                  <Button
                     onClick={() => copyToClipboard(vueUsage, 'vueUsage')}
-                    className="flex items-center justify-center h-8 px-2 border border-neutral-300 rounded hover:bg-neutral-50 transition-colors shrink-0"
+                    icon
                     aria-label="Copy usage code"
                   >
                     {copiedItem === 'vueUsage' ? (
-                      <Check size={16} className="text-green-600" />
+                      <Check size={18} className="text-green-600" />
                     ) : (
-                      <Copy size={16} />
+                      <Copy size={18} />
                     )}
-                  </button>
+                  </Button>
                 </div>
                 <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
                   <code className="text-neutral-900">{vueUsage}</code>

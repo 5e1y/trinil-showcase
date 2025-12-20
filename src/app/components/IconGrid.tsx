@@ -18,14 +18,15 @@ export function IconGrid({
   searchQuery,
 }: IconGridProps) {
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; top: number; bottom: number } | null>(null);
 
   const handleMouseEnter = (iconName: string, e: React.MouseEvent | React.FocusEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setHoveredIcon(iconName);
     setTooltipPosition({
       x: rect.left + rect.width / 2,
-      y: rect.top - 8,
+      top: rect.top - 8,
+      bottom: rect.bottom + 8,
     });
   };
 
@@ -80,7 +81,7 @@ export function IconGrid({
 
       {/* Tooltip - always show on hover */}
       {hoveredIcon && tooltipPosition && (
-        <Tooltip iconName={hoveredIcon} x={tooltipPosition.x} y={tooltipPosition.y} />
+        <Tooltip iconName={hoveredIcon} x={tooltipPosition.x} top={tooltipPosition.top} bottom={tooltipPosition.bottom} />
       )}
 
       {/* No results */}

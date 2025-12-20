@@ -1,5 +1,6 @@
 import { ExternalLink } from 'trinil-react';
 import { IconSlider } from './IconSlider';
+import { Button } from './Button';
 import { useState, useEffect } from 'react';
 
 interface SidebarProps {
@@ -48,13 +49,14 @@ export function Sidebar({
             aria-label="Search icons"
           />
           {search && (
-            <button
+            <Button
               onClick={() => onSearchChange('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-neutral-100 rounded"
+              icon
+              className="absolute right-1 top-1/2 -translate-y-1/2"
               aria-label="Clear search"
             >
               ✕
-            </button>
+            </Button>
           )}
         </div>
 
@@ -68,15 +70,14 @@ export function Sidebar({
       </div>
 
       <div className="mt-6 pt-6 border-t border-neutral-200">
-        <a
-          href={githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
+        <Button
+          onClick={() => window.open(githubUrl, '_blank')}
+          variant="primary"
+          className="w-auto"
         >
           <ExternalLink size={20} />
-          <span className="text-sm font-medium">GitHub</span>
-        </a>
+          <span>GitHub</span>
+        </Button>
       </div>
     </aside>
   );
