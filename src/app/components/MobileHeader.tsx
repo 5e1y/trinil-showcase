@@ -1,4 +1,4 @@
-import { ExternalLink } from 'trinil-react';
+import { ExternalLink, SettingsVertical } from 'trinil-react';
 import { IconSlider } from './IconSlider';
 import { Button } from './Button';
 
@@ -7,6 +7,8 @@ interface MobileHeaderProps {
   onSizeChange: (size: number) => void;
   search: string;
   onSearchChange: (value: string) => void;
+  onToggleTagMenu: () => void;
+  selectedTagsCount: number;
   githubUrl: string;
 }
 
@@ -15,6 +17,8 @@ export function MobileHeader({
   onSizeChange,
   search,
   onSearchChange,
+  onToggleTagMenu,
+  selectedTagsCount,
   githubUrl,
 }: MobileHeaderProps) {
   return (
@@ -30,13 +34,15 @@ export function MobileHeader({
             aria-label="Search icons"
           />
           {search && (
-            <button
+            <Button
               onClick={() => onSearchChange('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 text-neutral-400 hover:text-neutral-600"
+              icon
+              variant="secondary"
+              className="absolute right-2 top-1/2 -translate-y-1/2 !w-6 !h-6 text-neutral-400 hover:text-neutral-600"
               aria-label="Clear search"
             >
               ✕
-            </button>
+            </Button>
           )}
         </div>
         <Button
@@ -49,8 +55,25 @@ export function MobileHeader({
         </Button>
       </div>
 
-      <div className="px-4 pb-4">
-        <IconSlider value={iconSize} onChange={onSizeChange} />
+      <div className="px-4 pb-4 flex items-center gap-3">
+        <div className="flex-1">
+          <IconSlider value={iconSize} onChange={onSizeChange} />
+        </div>
+        <div className="relative">
+          <Button
+            onClick={onToggleTagMenu}
+            variant="outline"
+            icon
+            aria-label="Toggle themes menu"
+          >
+            <SettingsVertical size={16} />
+          </Button>
+          {selectedTagsCount > 0 && (
+            <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 text-xs font-semibold bg-neutral-900 text-white rounded-full">
+              {selectedTagsCount}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

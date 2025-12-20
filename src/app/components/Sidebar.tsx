@@ -1,6 +1,7 @@
 import { ExternalLink } from 'trinil-react';
 import { IconSlider } from './IconSlider';
 import { Button } from './Button';
+import { TagFilter } from './TagFilter';
 import { useState, useEffect } from 'react';
 
 interface SidebarProps {
@@ -8,6 +9,8 @@ interface SidebarProps {
   onSizeChange: (size: number) => void;
   search: string;
   onSearchChange: (value: string) => void;
+  selectedTags: string[];
+  onTagsChange: (tags: string[]) => void;
   githubUrl: string;
 }
 
@@ -16,6 +19,8 @@ export function Sidebar({
   onSizeChange,
   search,
   onSearchChange,
+  selectedTags,
+  onTagsChange,
   githubUrl,
 }: SidebarProps) {
   const [version, setVersion] = useState<string>('');
@@ -52,6 +57,7 @@ export function Sidebar({
             <Button
               onClick={() => onSearchChange('')}
               icon
+              variant="secondary"
               className="absolute right-1 top-1/2 -translate-y-1/2"
               aria-label="Clear search"
             >
@@ -61,6 +67,8 @@ export function Sidebar({
         </div>
 
         <IconSlider value={iconSize} onChange={onSizeChange} />
+
+        <TagFilter selectedTags={selectedTags} onTagsChange={onTagsChange} />
 
         <div className="pt-4 border-t border-neutral-200">
           <p className="text-xs text-neutral-500">

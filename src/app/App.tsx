@@ -13,8 +13,10 @@ import { useState, useMemo, useEffect } from 'react';
 import * as TrinilIcons from 'trinil-react';
 import { Sidebar } from './components/Sidebar';
 import { MobileHeader } from './components/MobileHeader';
+import { TagMenu } from './components/TagMenu';
 import { IconGrid } from './components/IconGrid';
 import { DetailsPanel } from './components/DetailsPanel';
+import { getIconsByTheme } from './data/iconTags';
 
 // Filter to get only valid icon components
 function getIconNames(): string[] {
@@ -37,16 +39,30 @@ export default function App() {
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [npmVersions, setNpmVersions] = useState({ react: '', vue: '' });
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [isTagMenuOpen, setIsTagMenuOpen] = useState(false);
 
   // Get all valid icon names
   const allIconNames = useMemo(() => getIconNames(), []);
 
-  // Filter icons based on search
+  // Filter icons based on search and tags
   const filteredIcons = useMemo(() => {
-    if (!search.trim()) return allIconNames;
+    let icons = allIconNames;
+    
+    // Apply tag filter
+    if (selectedTags.length > 0) {
+      const iconsWithSelectedTags = new Set<string>();
+      selectedTags.forEach(tag => {
+        getIconsByTheme(tag).forEach(icon => iconsWithSelectedTags.add(icon));
+      });
+      icons = icons.filter(icon => iconsWithSelectedTags.has(icon));
+    }
+    
+    // Apply search filter
+    if (!search.trim()) return icons;
     const searchLower = search.toLowerCase();
-    return allIconNames.filter(name => name.toLowerCase().includes(searchLower));
-  }, [allIconNames, search]);
+    return icons.filter(name => name.toLowerCase().includes(searchLower));
+  }, [allIconNames, search, selectedTags]);
 
   // Fetch NPM versions
   useEffect(() => {
@@ -80,12 +96,14 @@ export default function App() {
 
   return (
     <div className="h-screen flex flex-col bg-white">
-      {/* Mobile Header */}
+      {/* Mobile Header - Sticky */}
       <MobileHeader
         iconSize={iconSize}
         onSizeChange={setIconSize}
         search={search}
         onSearchChange={setSearch}
+        onToggleTagMenu={() => setIsTagMenuOpen(!isTagMenuOpen)}
+        selectedTagsCount={selectedTags.length}
         githubUrl={GITHUB_REPO_URL}
       />
 
@@ -93,17 +111,17 @@ export default function App() {
       <div className="flex-1 flex overflow-hidden transition-all duration-300">
         {/* Sidebar */}
         <Sidebar
-          isOpen={isSidebarOpen}
-          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
           iconSize={iconSize}
           onSizeChange={setIconSize}
           search={search}
           onSearchChange={setSearch}
+          selectedTags={selectedTags}
+          onTagsChange={setSelectedTags}
           githubUrl={GITHUB_REPO_URL}
         />
 
-        {/* Icon Grid */}
-        <div className="flex-1 flex overflow-hidden transition-all duration-300">
+        {/* Icon Grid + Menu Wrapper (mobile only) */}
+        <div className="flex-1 flex flex-col overflow-hidden lg:flex-row transition-all duration-300">
           <IconGrid
             icons={filteredIcons}
             iconSize={iconSize}
@@ -112,19 +130,29 @@ export default function App() {
             searchQuery={search}
           />
 
-          {/* Details Panel */}
-          {selectedIcon && (
-            <DetailsPanel
-              iconName={selectedIcon}
-              iconSize={iconSize}
-              onClose={() => setSelectedIcon(null)}
-              reactPkg={REACT_PKG}
-              vuePkg={VUE_PKG}
-              reactVersion={npmVersions.react}
-              vueVersion={npmVersions.vue}
+          {/* Tag Menu Mobile - In the flow */}
+          {isTagMenuOpen && (
+            <TagMenu
+              isOpen={isTagMenuOpen}
+              onClose={() => setIsTagMenuOpen(false)}
+              selectedTags={selectedTags}
+              onTagsChange={setSelectedTags}
             />
           )}
         </div>
+
+        {/* Details Panel */}
+        {selectedIcon && (
+          <DetailsPanel
+            iconName={selectedIcon}
+            iconSize={iconSize}
+            onClose={() => setSelectedIcon(null)}
+            reactPkg={REACT_PKG}
+            vuePkg={VUE_PKG}
+            reactVersion={npmVersions.react}
+            vueVersion={npmVersions.vue}
+          />
+        )}
       </div>
     </div>
   );
