@@ -7,7 +7,11 @@ interface TooltipProps {
 }
 
 export function Tooltip({ iconName, x, y }: TooltipProps) {
-  const [position, setPosition] = useState({ x, y });
+  const [position, setPosition] = useState<{ x: number; y: number; placement: 'top' | 'bottom' }>({ 
+    x, 
+    y, 
+    placement: 'top' 
+  });
 
   useEffect(() => {
     // Adjust position to avoid clipping at viewport edges
@@ -17,6 +21,13 @@ export function Tooltip({ iconName, x, y }: TooltipProps) {
 
     let adjustedX = x;
     let adjustedY = y - tooltipHeight - padding;
+    let placement: 'top' | 'bottom' = 'top';
+
+    // Check top edge - if not enough space, show below
+    if (adjustedY < padding) {
+      adjustedY = y + tooltipHeight + padding;
+      placement = 'bottom';
+    }
 
     // Check right edge
     if (adjustedX + tooltipWidth / 2 > window.innerWidth - padding) {
@@ -28,12 +39,7 @@ export function Tooltip({ iconName, x, y }: TooltipProps) {
       adjustedX = tooltipWidth / 2 + padding;
     }
 
-    // Check top edge
-    if (adjustedY < padding) {
-      adjustedY = y + tooltipHeight + padding;
-    }
-
-    setPosition({ x: adjustedX, y: adjustedY });
+    setPosition({ x: adjustedX, y: adjustedY, placement });
   }, [x, y]);
 
   return (
@@ -47,14 +53,28 @@ export function Tooltip({ iconName, x, y }: TooltipProps) {
     >
       <div className="bg-neutral-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
         {iconName}
-        <div
-          className="absolute w-2 h-2 bg-neutral-900 transform rotate-45"
-          style={{
-            left: '50%',
-            bottom: '-4px',
-            marginLeft: '-4px',
-          }}
-        />
+        {/* Arrow pointing up when tooltip is below the icon */}
+        {position.placement === 'bottom' && (
+          <div
+            className="absolute w-2 h-2 bg-neutral-900 transform rotate-45"
+            style={{
+              left: '50%',
+              top: '-4px',
+              marginLeft: '-4px',
+            }}
+          />
+        )}
+        {/* Arrow pointing down when tooltip is above the icon */}
+        {position.placement === 'top' && (
+          <div
+            className="absolute w-2 h-2 bg-neutral-900 transform rotate-45"
+            style={{
+              left: '50%',
+              bottom: '-4px',
+              marginLeft: '-4px',
+            }}
+          />
+        )}
       </div>
     </div>
   );
