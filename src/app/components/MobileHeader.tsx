@@ -1,5 +1,6 @@
 import { ExternalLink } from 'trinil-react';
 import { IconSlider } from './IconSlider';
+import { Button } from './Button';
 
 interface MobileHeaderProps {
   iconSize: number;
@@ -29,25 +30,24 @@ export function MobileHeader({
             aria-label="Search icons"
           />
           {search && (
-            <button
+            <Button
               onClick={() => onSearchChange('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-neutral-100 rounded"
+              icon
+              className="absolute right-1 top-1/2 -translate-y-1/2"
               aria-label="Clear search"
             >
               ✕
-            </button>
+            </Button>
           )}
         </div>
-        <a
-          href={githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 px-3 h-10 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors shrink-0"
-          aria-label="View on GitHub"
+        <Button
+          onClick={() => window.open(githubUrl, '_blank')}
+          variant="primary"
+          className="w-auto shrink-0"
         >
           <ExternalLink size={16} />
-          <span className="text-sm font-medium">GitHub</span>
-        </a>
+          <span>GitHub</span>
+        </Button>
       </div>
 
       <div className="px-4 pb-4">

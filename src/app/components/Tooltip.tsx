@@ -3,44 +3,41 @@ import { useEffect, useState } from 'react';
 interface TooltipProps {
   iconName: string;
   x: number;
-  y: number;
+  top: number;
+  bottom: number;
 }
 
-export function Tooltip({ iconName, x, y }: TooltipProps) {
-  const [position, setPosition] = useState<{ x: number; y: number; placement: 'top' | 'bottom' }>({ 
-    x, 
-    y, 
-    placement: 'top' 
-  });
-
-  useEffect(() => {
-    // Adjust position to avoid clipping at viewport edges
-    const tooltipWidth = 200; // approximate max width
-    const tooltipHeight = 40; // approximate height
-    const padding = 8;
+export function Tooltip({ iconName, x, top, bottom }: TooltipProps) {
+  const calculatePosition = () => {
+    const tooltipWidth = 200;
+    const tooltipHeight = 40;
+    const gap = 4;
 
     let adjustedX = x;
-    let adjustedY = y - tooltipHeight - padding;
+    let adjustedY = top - tooltipHeight - gap;
     let placement: 'top' | 'bottom' = 'top';
 
-    // Check top edge - if not enough space, show below
-    if (adjustedY < padding) {
-      adjustedY = y + tooltipHeight + padding;
+    if (adjustedY < 8) {
+      adjustedY = bottom + gap;
       placement = 'bottom';
     }
 
-    // Check right edge
-    if (adjustedX + tooltipWidth / 2 > window.innerWidth - padding) {
-      adjustedX = window.innerWidth - tooltipWidth / 2 - padding;
+    if (adjustedX + tooltipWidth / 2 > window.innerWidth - 8) {
+      adjustedX = window.innerWidth - tooltipWidth / 2 - 8;
     }
 
-    // Check left edge
-    if (adjustedX - tooltipWidth / 2 < padding) {
-      adjustedX = tooltipWidth / 2 + padding;
+    if (adjustedX - tooltipWidth / 2 < 8) {
+      adjustedX = tooltipWidth / 2 + 8;
     }
 
-    setPosition({ x: adjustedX, y: adjustedY, placement });
-  }, [x, y]);
+    return { x: adjustedX, y: adjustedY, placement };
+  };
+
+  const [position, setPosition] = useState(() => calculatePosition());
+
+  useEffect(() => {
+    setPosition(calculatePosition());
+  }, [x, top, bottom]);
 
   return (
     <div
