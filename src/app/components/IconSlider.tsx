@@ -17,28 +17,36 @@ export function IconSlider({ value, min = 16, max = 64, step = 1, onChange }: Ic
         </label>
         <span className="text-sm text-neutral-500">{value}px</span>
       </div>
-      <div className="relative flex items-center select-none touch-none w-full h-5">
-        <div className="relative flex-1 h-1 bg-neutral-200 rounded-full">
+      <div className="w-full">
+        <div className="relative flex items-center h-5 select-none touch-none">
+          {/* Track background */}
+          <div className="absolute w-full h-1 bg-neutral-200 rounded-full pointer-events-none" />
+          
+          {/* Track filled */}
           <div
-            className="absolute h-full bg-neutral-900 rounded-full transition-all"
+            className="absolute h-1 bg-neutral-900 rounded-full pointer-events-none transition-all"
             style={{ width: `${percentage}%` }}
           />
+          
+          {/* Thumb */}
+          <div
+            className="absolute w-5 h-5 bg-white border-2 border-neutral-900 rounded-full hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 cursor-pointer pointer-events-none transition-all"
+            style={{ left: `${percentage}%`, transform: 'translateX(-50%)' }}
+          />
+          
+          {/* Hidden input range */}
+          <input
+            id="size-slider"
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            onChange={(e) => onChange(Number(e.target.value))}
+            className="absolute w-full h-full opacity-0 cursor-pointer z-10"
+            aria-label="Icon size"
+          />
         </div>
-        <input
-          id="size-slider"
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="absolute w-full h-full opacity-0 cursor-pointer"
-          aria-label="Icon size"
-        />
-        <div
-          className="block w-5 h-5 bg-white border-2 border-neutral-900 rounded-full hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 cursor-pointer pointer-events-none"
-          style={{ left: `${percentage}%`, transform: 'translateX(-50%)' }}
-        />
       </div>
     </div>
   );
