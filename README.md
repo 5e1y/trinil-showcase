@@ -1,7 +1,9 @@
 
-# 🎨 Icon Browser for Trinil
+# 🎨 Trinil Icon Browser
 
-An interactive, modern icon showcase built with **React**, **Vite**, and **Tailwind CSS**. Browse through a curated collection of icons with smooth animations, responsive design, and an intuitive user interface.
+An interactive, modern showcase for **Trinil** — a comprehensive icon library. Browse, explore, and integrate beautiful icons into your projects with smooth animations, responsive design, and an intuitive user interface.
+
+> **Trinil** is a curated collection of high-quality icons available on [GitHub](https://github.com/5e1y/trinil) and [trinil.dev](https://trinil.dev)
 
 ## ✨ Features
 
@@ -10,7 +12,7 @@ An interactive, modern icon showcase built with **React**, **Vite**, and **Tailw
 - 🎪 **Interactive components** including sliders, grids, and detailed panels
 - 🎨 **Tailwind CSS** styling for a polished, modern look
 - 📱 **Mobile-first approach** with dedicated header and sidebar components
-- ♿ **Accessible** UI components from Radix UI primitives
+- ♿ **Accessible** UI components
 - 🎭 **Smooth animations** and hover effects
 
 ## 🛠️ Tech Stack
@@ -19,23 +21,7 @@ An interactive, modern icon showcase built with **React**, **Vite**, and **Tailw
 - **Vite 6.3** - Build tool & dev server
 - **Tailwind CSS 4.1** - Utility-first CSS framework
 - **TypeScript** - Type-safe development
-- **Trinil React** - UI component library
-
-## 📦 Installation
-
-```bash
-npm install
-```
-
-## 🚀 Getting Started
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`
+- **Trinil React** - React components for Trinil icons
 
 ## 🏗️ Project Structure
 
@@ -57,23 +43,13 @@ src/
 └── main.tsx                    # Entry point
 ```
 
-## 🎯 Available Scripts
+## � Resources
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-
-## 📄 License
-
-See [LICENSE](LICENSE) for details.
-
-## 🔗 References
-
-- **Original Design**: [Figma File](https://www.figma.com/design/Nx6vg42OkSQLlT17wsDEY4/Icon-Browser-for-Trinil)
-- **Attributions**: [ATTRIBUTIONS.md](ATTRIBUTIONS.md)
-- **Guidelines**: [Guidelines.md](guidelines/Guidelines.md)
+- **Icon Library**: [Trinil on GitHub](https://github.com/5e1y/trinil)
+- **Website**: [trinil.dev](https://trinil.dev)
+- **NPM Package**: [`trinil-react`](https://www.npmjs.com/package/trinil-react)
 
 ---
 
-Made with ❤️ as a showcase of the Trinil design system
+Made with ❤️ as a showcase of the Trinil icon library
   
