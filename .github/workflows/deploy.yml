@@ -34,6 +34,16 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Create CNAME file
+        run: echo "trinil.dev" > dist/CNAME
+
+      - name: Debug - Verify CNAME
+        run: |
+          echo "Contents of dist directory:"
+          ls -la dist/
+          echo "Contents of CNAME file:"
+          cat dist/CNAME
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
