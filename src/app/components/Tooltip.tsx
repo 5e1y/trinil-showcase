@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import './Tooltip.css';
 
 interface TooltipProps {
   iconName: string;
