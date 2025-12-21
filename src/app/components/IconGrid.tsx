@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as TrinilIcons from 'trinil-react';
 import { Tooltip } from './Tooltip';
-import { Button } from './Button';
+import './IconGrid.css';
 
 interface IconGridProps {
   icons: string[];
@@ -37,16 +37,16 @@ export function IconGrid({
   };
 
   return (
-    <div className="flex-1 overflow-auto p-6 bg-[var(--ds-color-surface-muted)]">
+    <div className="ds-icon-grid">
       {/* Results count */}
       {searchQuery && (
-        <div className="mb-4 text-sm text-[var(--ds-color-text-subtle)]">
+        <div className="ds-icon-grid-count">
           {icons.length} icon{icons.length !== 1 ? 's' : ''} found
         </div>
       )}
 
       {/* Simple flex grid */}
-      <div className="flex flex-wrap gap-3">
+      <div className="ds-icon-grid-items">
         {icons.map((iconName) => {
           const IconComponent = TrinilIcons[iconName as keyof typeof TrinilIcons] as React.ComponentType<{
             size?: number;
@@ -57,19 +57,18 @@ export function IconGrid({
           const isSelected = selectedIcon === iconName;
 
           return (
-            <Button
+            <button
               key={iconName}
               onClick={() => onSelectIcon(iconName)}
               onMouseEnter={(e) => handleMouseEnter(iconName, e)}
               onMouseLeave={handleMouseLeave}
               onFocus={(e) => handleMouseEnter(iconName, e)}
               onBlur={handleMouseLeave}
-              variant="secondary"
-              className={`!w-auto !h-auto aspect-square flex-grow min-w-[72px] min-h-[72px] max-w-[96px] max-h-[96px] p-3 rounded-[var(--ds-radius-lg)] ${isSelected ? 'ring-2 ring-[var(--ds-color-primary)] ring-offset-2 ring-offset-[var(--ds-color-surface-muted)]' : ''}`}
+              className={`ds-icon-button ${isSelected ? 'selected' : ''}`}
               aria-label={iconName}
             >
               {IconComponent && <IconComponent size={iconSize} color="var(--ds-color-text)" />}
-            </Button>
+            </button>
           );
         })}
       </div>
@@ -81,7 +80,7 @@ export function IconGrid({
 
       {/* No results */}
       {icons.length === 0 && (
-        <div className="flex items-center justify-center h-64 text-[var(--ds-color-text-muted)]">
+        <div className="ds-icon-grid-empty">
           No icons found for "{searchQuery}"
         </div>
       )}

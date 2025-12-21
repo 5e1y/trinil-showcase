@@ -3,6 +3,7 @@ import { Download, Copy, Check } from 'trinil-react';
 import * as TrinilIcons from 'trinil-react';
 import { Button } from './Button';
 import { Select } from './Select';
+import './DetailsPanel.css';
 
 interface DetailsPanelProps {
   iconName: string;
@@ -85,10 +86,10 @@ export function DetailsPanel({
   const vueUsage = `<${iconName} :size="24" />`;
 
   return (
-    <div className="fixed inset-0 z-30 lg:relative lg:w-80 lg:border-l lg:border-[var(--ds-color-border)] flex flex-col bg-[var(--ds-color-surface)] shadow-[var(--ds-shadow-soft)]">
+    <div className="ds-details-panel">
       {/* Header */}
-      <div className="h-16 border-b border-[var(--ds-color-border)] px-6 flex items-center justify-between shrink-0">
-        <h2 className="font-semibold text-[var(--ds-color-text)]">Details</h2>
+      <div className="ds-details-panel-header">
+        <h2>Details</h2>
         <Button
           onClick={onClose}
           icon
@@ -100,22 +101,21 @@ export function DetailsPanel({
       </div>
 
       {/* Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="flex flex-col p-6 gap-6">
+      <div className="ds-details-panel-content">
+        <div className="ds-details-panel-body">
           {/* Icon Preview */}
-          <div className="flex flex-col gap-3">
+          <div className="ds-icon-preview">
             {/* Icon at 160px with 12x12 grid background */}
             <div 
               ref={iconPreviewRef}
-              className="mx-auto relative flex items-center justify-center"
+              className="ds-icon-preview-grid"
             >
               {/* 12x12 Grid behind icon */}
               <svg 
                 width="160" 
                 height="160" 
                 viewBox="0 0 12 12" 
-                className="absolute rounded-[var(--ds-radius-lg)] border border-[var(--ds-color-border)]"
-                style={{ backgroundColor: 'var(--ds-color-surface)' }}
+                className="ds-icon-preview-grid-svg"
               >
                 {/* Vertical lines */}
                 {Array.from({ length: 13 }).map((_, i) => (
@@ -144,19 +144,19 @@ export function DetailsPanel({
               </svg>
               
               {/* Icon on top */}
-              <div className="relative z-10">
+              <div className="ds-icon-preview-icon">
                 <IconComponent size={160} color="var(--ds-color-text)" />
               </div>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <h3 className="font-semibold text-[var(--ds-color-text)] text-center">{iconName}</h3>
-              <div className="text-center text-xs text-[var(--ds-color-text-muted)]">Size: {iconSize}px</div>
+            <div className="ds-icon-preview-info">
+              <h3>{iconName}</h3>
+              <div className="ds-icon-preview-size">Size: {iconSize}px</div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
+          <div className="ds-details-actions">
             <Button
               onClick={downloadSVG}
               variant="primary"
@@ -181,7 +181,7 @@ export function DetailsPanel({
           </div>
 
           {/* Code Snippets Section */}
-            <div className="flex flex-col gap-4">
+          <div className="ds-code-snippets">
             <Select
               value={selectedLanguage}
               onValueChange={setSelectedLanguage}
@@ -191,12 +191,12 @@ export function DetailsPanel({
               ]}
             />
 
-            <div className="space-y-4">
+            <div className="ds-code-snippets-content">
               {selectedLanguage === 'react' && (
                 <>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Install</span>
+                  <div className="ds-code-block">
+                    <div className="ds-code-block-header">
+                      <span>Install</span>
                       <Button
                         onClick={() => copyToClipboard(reactInstallCmd, 'reactInstall')}
                         icon
@@ -210,14 +210,14 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
-                      <code className="text-[var(--ds-color-text)]">{reactInstallCmd}</code>
+                    <pre className="ds-code-pre">
+                      <code>{reactInstallCmd}</code>
                     </pre>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Usage</span>
+                  <div className="ds-code-block">
+                    <div className="ds-code-block-header">
+                      <span>Usage</span>
                       <Button
                         onClick={() => copyToClipboard(reactUsage, 'reactUsage')}
                         icon
@@ -231,8 +231,8 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
-                      <code className="text-[var(--ds-color-text)]">{reactUsage}</code>
+                    <pre className="ds-code-pre">
+                      <code>{reactUsage}</code>
                     </pre>
                   </div>
                 </>
@@ -240,9 +240,9 @@ export function DetailsPanel({
 
               {selectedLanguage === 'vue' && (
                 <>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Install</span>
+                  <div className="ds-code-block">
+                    <div className="ds-code-block-header">
+                      <span>Install</span>
                       <Button
                         onClick={() => copyToClipboard(vueInstallCmd, 'vueInstall')}
                         icon
@@ -256,14 +256,14 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
-                      <code className="text-[var(--ds-color-text)]">{vueInstallCmd}</code>
+                    <pre className="ds-code-pre">
+                      <code>{vueInstallCmd}</code>
                     </pre>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Usage</span>
+                  <div className="ds-code-block">
+                    <div className="ds-code-block-header">
+                      <span>Usage</span>
                       <Button
                         onClick={() => copyToClipboard(vueUsage, 'vueUsage')}
                         icon
@@ -277,8 +277,8 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
-                      <code className="text-[var(--ds-color-text)]">{vueUsage}</code>
+                    <pre className="ds-code-pre">
+                      <code>{vueUsage}</code>
                     </pre>
                   </div>
                 </>
