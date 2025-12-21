@@ -85,10 +85,10 @@ export function DetailsPanel({
   const vueUsage = `<${iconName} :size="24" />`;
 
   return (
-    <div className="fixed inset-0 z-30 lg:relative lg:w-80 lg:border-l lg:border-neutral-200 flex flex-col bg-white">
+    <div className="fixed inset-0 z-30 lg:relative lg:w-80 lg:border-l lg:border-[var(--ds-color-border)] flex flex-col bg-[var(--ds-color-surface)] shadow-[var(--ds-shadow-soft)]">
       {/* Header */}
-      <div className="h-16 border-b border-neutral-200 px-6 flex items-center justify-between shrink-0">
-        <h2 className="font-semibold text-neutral-900">Details</h2>
+      <div className="h-16 border-b border-[var(--ds-color-border)] px-6 flex items-center justify-between shrink-0">
+        <h2 className="font-semibold text-[var(--ds-color-text)]">Details</h2>
         <Button
           onClick={onClose}
           icon
@@ -114,8 +114,8 @@ export function DetailsPanel({
                 width="160" 
                 height="160" 
                 viewBox="0 0 12 12" 
-                className="absolute rounded-lg border border-neutral-200"
-                style={{ backgroundColor: '#ffffff' }}
+                className="absolute rounded-[var(--ds-radius-lg)] border border-[var(--ds-color-border)]"
+                style={{ backgroundColor: 'var(--ds-color-surface)' }}
               >
                 {/* Vertical lines */}
                 {Array.from({ length: 13 }).map((_, i) => (
@@ -125,7 +125,7 @@ export function DetailsPanel({
                     y1="0" 
                     x2={i} 
                     y2="12" 
-                    stroke="#e5e7eb" 
+                    stroke="var(--ds-color-border)" 
                     strokeWidth="0.05"
                   />
                 ))}
@@ -137,7 +137,7 @@ export function DetailsPanel({
                     y1={i} 
                     x2="12" 
                     y2={i} 
-                    stroke="#e5e7eb" 
+                    stroke="var(--ds-color-border)" 
                     strokeWidth="0.05"
                   />
                 ))}
@@ -145,13 +145,13 @@ export function DetailsPanel({
               
               {/* Icon on top */}
               <div className="relative z-10">
-                <IconComponent size={160} color="#000000" />
+                <IconComponent size={160} color="var(--ds-color-text)" />
               </div>
             </div>
 
             <div className="flex flex-col gap-1">
-              <h3 className="font-semibold text-neutral-900 text-center">{iconName}</h3>
-              <div className="text-center text-xs text-neutral-500">Size: {iconSize}px</div>
+              <h3 className="font-semibold text-[var(--ds-color-text)] text-center">{iconName}</h3>
+              <div className="text-center text-xs text-[var(--ds-color-text-muted)]">Size: {iconSize}px</div>
             </div>
           </div>
 
@@ -181,7 +181,7 @@ export function DetailsPanel({
           </div>
 
           {/* Code Snippets Section */}
-          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
             <Select
               value={selectedLanguage}
               onValueChange={setSelectedLanguage}
@@ -196,7 +196,7 @@ export function DetailsPanel({
                 <>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-neutral-700 font-medium">Install</span>
+                        <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Install</span>
                       <Button
                         onClick={() => copyToClipboard(reactInstallCmd, 'reactInstall')}
                         icon
@@ -210,14 +210,14 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                      <code className="text-neutral-900">{reactInstallCmd}</code>
+                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
+                      <code className="text-[var(--ds-color-text)]">{reactInstallCmd}</code>
                     </pre>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-neutral-700 font-medium">Usage</span>
+                      <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Usage</span>
                       <Button
                         onClick={() => copyToClipboard(reactUsage, 'reactUsage')}
                         icon
@@ -231,8 +231,8 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                      <code className="text-neutral-900">{reactUsage}</code>
+                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
+                      <code className="text-[var(--ds-color-text)]">{reactUsage}</code>
                     </pre>
                   </div>
                 </>
@@ -242,7 +242,7 @@ export function DetailsPanel({
                 <>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-neutral-700 font-medium">Install</span>
+                      <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Install</span>
                       <Button
                         onClick={() => copyToClipboard(vueInstallCmd, 'vueInstall')}
                         icon
@@ -256,14 +256,14 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                      <code className="text-neutral-900">{vueInstallCmd}</code>
+                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
+                      <code className="text-[var(--ds-color-text)]">{vueInstallCmd}</code>
                     </pre>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-neutral-700 font-medium">Usage</span>
+                      <span className="text-sm text-[var(--ds-color-text-subtle)] font-medium">Usage</span>
                       <Button
                         onClick={() => copyToClipboard(vueUsage, 'vueUsage')}
                         icon
@@ -277,8 +277,8 @@ export function DetailsPanel({
                         )}
                       </Button>
                     </div>
-                    <pre className="p-3 bg-neutral-100 rounded-lg text-xs overflow-x-auto border border-neutral-200">
-                      <code className="text-neutral-900">{vueUsage}</code>
+                    <pre className="p-3 bg-[var(--ds-color-input)] rounded-[var(--ds-radius-md)] text-xs overflow-x-auto border border-[var(--ds-color-border)]">
+                      <code className="text-[var(--ds-color-text)]">{vueUsage}</code>
                     </pre>
                   </div>
                 </>

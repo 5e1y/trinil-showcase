@@ -37,10 +37,10 @@ export function IconGrid({
   };
 
   return (
-    <div className="flex-1 overflow-auto p-6 bg-[rgba(255,255,255,0)]">
+    <div className="flex-1 overflow-auto p-6 bg-[var(--ds-color-surface-muted)]">
       {/* Results count */}
       {searchQuery && (
-        <div className="mb-4 text-sm text-neutral-600">
+        <div className="mb-4 text-sm text-[var(--ds-color-text-subtle)]">
           {icons.length} icon{icons.length !== 1 ? 's' : ''} found
         </div>
       )}
@@ -65,10 +65,10 @@ export function IconGrid({
               onFocus={(e) => handleMouseEnter(iconName, e)}
               onBlur={handleMouseLeave}
               variant="secondary"
-              className={`!w-auto !h-auto aspect-square flex-grow min-w-[72px] min-h-[72px] max-w-[96px] max-h-[96px] p-3 ${isSelected ? 'ring-2 ring-neutral-900' : ''}`}
+              className={`!w-auto !h-auto aspect-square flex-grow min-w-[72px] min-h-[72px] max-w-[96px] max-h-[96px] p-3 rounded-[var(--ds-radius-lg)] ${isSelected ? 'ring-2 ring-[var(--ds-color-primary)] ring-offset-2 ring-offset-[var(--ds-color-surface-muted)]' : ''}`}
               aria-label={iconName}
             >
-              {IconComponent && <IconComponent size={iconSize} color="#000000" />}
+              {IconComponent && <IconComponent size={iconSize} color="var(--ds-color-text)" />}
             </Button>
           );
         })}
@@ -81,7 +81,7 @@ export function IconGrid({
 
       {/* No results */}
       {icons.length === 0 && (
-        <div className="flex items-center justify-center h-64 text-neutral-400">
+        <div className="flex items-center justify-center h-64 text-[var(--ds-color-text-muted)]">
           No icons found for "{searchQuery}"
         </div>
       )}

@@ -1,0 +1,13 @@
+.ds-tooltip {
+  position: fixed;
+  z-index: 50;
+  background: var(--ds-color-primary);
+  color: var(--ds-color-primary-contrast);
+  padding: 8px 12px;
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--ds-shadow-soft);
+}

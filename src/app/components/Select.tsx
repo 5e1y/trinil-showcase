@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'trinil-react';
+import './Select.css';
 
 interface SelectOption {
   value: string;
@@ -15,43 +16,36 @@ interface SelectProps {
 
 export function Select({ value, onValueChange, options, className = '' }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-
   const selectedLabel = options.find(opt => opt.value === value)?.label || value;
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`ds-select ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-10 px-4 py-2 flex items-center justify-between rounded-lg border border-neutral-300 bg-white text-neutral-900 text-sm hover:bg-neutral-50 active:bg-neutral-100 transition-colors text-left"
+        className="ds-select-button"
       >
         <span>{selectedLabel}</span>
         <ChevronDown
           size={16}
-          className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className="ds-select-chevron"
         />
       </button>
 
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 z-40"
+            className="ds-select-backdrop"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-full mt-1 w-full z-50 bg-white border border-neutral-300 rounded-lg shadow-lg overflow-hidden">
-            {options.map((option, index) => (
+          <div className="ds-select-dropdown">
+            {options.map((option) => (
               <button
                 key={option.value}
                 onClick={() => {
                   onValueChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                  value === option.value
-                    ? 'bg-neutral-100 text-neutral-900 font-medium'
-                    : 'text-neutral-700 hover:bg-neutral-50'
-                } ${index === 0 ? 'rounded-t-[7px]' : ''} ${
-                  index === options.length - 1 ? 'rounded-b-[7px]' : ''
-                }`}
+                className={`ds-select-option ${value === option.value ? 'selected' : ''}`}
               >
                 {option.label}
               </button>

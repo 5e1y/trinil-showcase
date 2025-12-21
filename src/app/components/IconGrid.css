@@ -1,0 +1,43 @@
+.ds-icon-grid {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+  background: var(--ds-color-surface-muted);
+}
+
+.ds-icon-grid-results {
+  margin-bottom: 16px;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-text-subtle);
+}
+
+.ds-icon-grid-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ds-icon-button {
+  width: auto;
+  aspect-ratio: 1;
+  flex-grow: 1;
+  min-width: 72px;
+  min-height: 72px;
+  max-width: 96px;
+  max-height: 96px;
+  padding: 12px;
+  border-radius: var(--ds-radius-lg);
+}
+
+.ds-icon-button.selected {
+  outline: 2px solid var(--ds-color-primary);
+  outline-offset: 2px;
+}
+
+.ds-icon-grid-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 256px;
+  color: var(--ds-color-text-muted);
+}
