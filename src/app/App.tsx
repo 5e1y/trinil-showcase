@@ -17,6 +17,7 @@ import { TagMenu } from './components/TagMenu';
 import { IconGrid } from './components/IconGrid';
 import { DetailsPanel } from './components/DetailsPanel';
 import { getIconsByTheme } from './data/iconTags';
+import './App.css';
 
 // Filter to get only valid icon components
 function getIconNames(): string[] {
@@ -95,7 +96,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col bg-[var(--ds-color-app)] text-[var(--ds-color-text)]">
+    <div className="ds-app">
       {/* Mobile Header - Sticky */}
       <MobileHeader
         iconSize={iconSize}
@@ -108,7 +109,7 @@ export default function App() {
       />
 
       {/* Main Layout */}
-      <div className="flex-1 flex overflow-hidden transition-all duration-300">
+      <div className="ds-app-main">
         {/* Sidebar */}
         <Sidebar
           iconSize={iconSize}
@@ -121,7 +122,7 @@ export default function App() {
         />
 
         {/* Icon Grid + Menu Wrapper (mobile only) */}
-        <div className="flex-1 flex flex-col overflow-hidden lg:flex-row transition-all duration-300">
+        <div className="ds-app-content">
           <IconGrid
             icons={filteredIcons}
             iconSize={iconSize}
