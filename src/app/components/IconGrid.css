@@ -5,7 +5,7 @@
   background: var(--ds-color-surface-muted);
 }
 
-.ds-icon-grid-results {
+.ds-icon-grid-count {
   margin-bottom: 16px;
   font-size: var(--ds-font-size-sm);
   color: var(--ds-color-text-subtle);
@@ -27,17 +27,33 @@
   max-height: 96px;
   padding: 12px;
   border-radius: var(--ds-radius-lg);
+  background: var(--ds-color-surface);
+  border: 1px solid var(--ds-color-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.ds-icon-button:hover {
+  background: var(--ds-color-surface-hover);
 }
 
 .ds-icon-button.selected {
   outline: 2px solid var(--ds-color-primary);
   outline-offset: 2px;
+  background: var(--ds-color-primary);
+  border-color: var(--ds-color-primary);
 }
 
 .ds-icon-grid-empty {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 256px;
+  color: var(--ds-color-text-muted);
+}
   height: 256px;
   color: var(--ds-color-text-muted);
 }
