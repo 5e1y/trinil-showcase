@@ -95,7 +95,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-screen flex flex-col bg-[var(--ds-color-app)] text-[var(--ds-color-text)]">
       {/* Mobile Header - Sticky */}
       <MobileHeader
         iconSize={iconSize}

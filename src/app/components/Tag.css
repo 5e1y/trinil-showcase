@@ -1,0 +1,105 @@
+.ds-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-medium);
+  white-space: nowrap;
+  border: 1px solid var(--ds-color-border);
+  transition: all 150ms ease-out;
+  cursor: pointer;
+  background: var(--ds-color-accent);
+  color: var(--ds-color-text-subtle);
+}
+
+.ds-tag:hover {
+  background: var(--ds-color-accent-strong);
+}
+
+.ds-tag.selected {
+  background: var(--ds-color-primary);
+  color: var(--ds-color-primary-contrast);
+  border-color: var(--ds-color-primary);
+}
+
+.ds-tag-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ds-tag-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ds-tag-filter-title {
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ds-tag-filter-clear {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-text-muted);
+  transition: color 150ms ease-out;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--ds-font-family);
+}
+
+.ds-tag-filter-clear:hover {
+  color: var(--ds-color-text-subtle);
+}
+
+.ds-tag-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ds-tag-menu {
+  width: 100%;
+  border-top: 1px solid var(--ds-color-border);
+  background: var(--ds-color-surface);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .ds-tag-menu {
+    display: none !important;
+  }
+}
+
+.ds-tag-menu.hidden {
+  display: none;
+}
+
+.ds-tag-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ds-color-border);
+}
+
+.ds-tag-menu-title {
+  font-size: 16px;
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-color-text);
+}
+
+.ds-tag-menu-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

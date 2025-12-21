@@ -3,6 +3,7 @@ import { IconSlider } from './IconSlider';
 import { Button } from './Button';
 import { TagFilter } from './TagFilter';
 import { useState, useEffect } from 'react';
+import './Sidebar.css';
 
 interface SidebarProps {
   iconSize: number;
@@ -37,20 +38,20 @@ export function Sidebar({
   }, []);
 
   return (
-    <aside className="hidden lg:flex w-64 border-r border-neutral-200 bg-white p-6 overflow-y-auto shrink-0 flex-col">
-      <div className="space-y-6 flex-1">
-        <h1 className="font-semibold text-neutral-900 text-2xl">
+    <aside className="ds-sidebar">
+      <div className="ds-sidebar-content">
+        <h1 className="ds-sidebar-title">
           Trinil
-          {version && <span className="text-sm text-neutral-400 ml-2">v{version}</span>}
+          {version && <span className="ds-sidebar-version">v{version}</span>}
         </h1>
 
-        <div className="relative">
+        <div style={{ position: 'relative' }}>
           <input
             type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search icons..."
-            className="w-full h-10 px-4 pr-10 rounded-lg border border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent text-sm"
+            className="ds-input"
             aria-label="Search icons"
           />
           {search && (
@@ -58,7 +59,7 @@ export function Sidebar({
               onClick={() => onSearchChange('')}
               icon
               variant="secondary"
-              className="absolute right-1 top-1/2 -translate-y-1/2"
+              style={{ position: 'absolute', right: '4px', top: '50%', transform: 'translateY(-50%)', marginTop: 0 }}
               aria-label="Clear search"
             >
               ✕
@@ -70,18 +71,15 @@ export function Sidebar({
 
         <TagFilter selectedTags={selectedTags} onTagsChange={onTagsChange} />
 
-        <div className="pt-4 border-t border-neutral-200">
-          <p className="text-xs text-neutral-500">
-            Style is locked. Only size can be customized.
-          </p>
+        <div className="ds-sidebar-info">
+          <p>Style is locked. Only size can be customized.</p>
         </div>
       </div>
 
-      <div className="mt-6 pt-6 border-t border-neutral-200">
+      <div className="ds-sidebar-footer">
         <Button
           onClick={() => window.open(githubUrl, '_blank')}
           variant="primary"
-          className="w-auto"
         >
           <ExternalLink size={20} />
           <span>GitHub</span>

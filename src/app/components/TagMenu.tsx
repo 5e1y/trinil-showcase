@@ -26,9 +26,9 @@ export function TagMenu({ isOpen, onClose, selectedTags, onTagsChange }: TagMenu
   };
 
   return (
-    <div className={`w-full border-t border-neutral-200 bg-white p-4 overflow-y-auto lg:hidden ${isOpen ? 'block' : 'hidden'}`}>
-      <div className="flex items-center justify-between mb-4 pb-4 border-b border-neutral-200">
-        <h2 className="text-base font-semibold text-neutral-900">Themes</h2>
+    <div className={`w-full border-t border-[var(--ds-color-border)] bg-[var(--ds-color-surface)] p-4 overflow-y-auto lg:hidden ${isOpen ? 'block' : 'hidden'}`}>
+      <div className="flex items-center justify-between mb-4 pb-4 border-b border-[var(--ds-color-border)]">
+        <h2 className="text-base font-semibold text-[var(--ds-color-text)]">Themes</h2>
         <Button
           onClick={onClose}
           icon
@@ -43,7 +43,7 @@ export function TagMenu({ isOpen, onClose, selectedTags, onTagsChange }: TagMenu
         {selectedTags.length > 0 && (
           <button
             onClick={clearTags}
-            className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors text-left font-medium"
+            className="text-sm text-[var(--ds-color-text-subtle)] hover:text-[var(--ds-color-text)] transition-colors text-left font-medium"
           >
             Clear all tags
           </button>

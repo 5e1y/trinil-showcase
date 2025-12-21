@@ -22,20 +22,20 @@ export function TagFilter({ selectedTags, onTagsChange }: TagFilterProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2.5">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold text-neutral-700 uppercase tracking-wide">Themes</h3>
+    <div className="ds-tag-filter">
+      <div className="ds-tag-filter-header">
+        <h3 className="ds-tag-filter-title">Themes</h3>
         {selectedTags.length > 0 && (
           <button
             onClick={clearTags}
-            className="text-xs text-neutral-400 hover:text-neutral-600 transition-colors"
+            className="ds-tag-filter-clear"
           >
             Clear all
           </button>
         )}
       </div>
       
-      <div className="flex flex-wrap gap-1.5">
+      <div className="ds-tag-filter-list">
         {allThemes.map((tag) => (
           <Tag
             key={tag}

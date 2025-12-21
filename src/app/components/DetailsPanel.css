@@ -1,0 +1,131 @@
+.ds-details-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: var(--ds-color-surface);
+  box-shadow: var(--ds-shadow-soft);
+}
+
+@media (min-width: 1024px) {
+  .ds-details-panel {
+    position: relative;
+    width: 320px;
+    border-left: 1px solid var(--ds-color-border);
+    inset: auto;
+    box-shadow: none;
+  }
+}
+
+.ds-details-header {
+  height: 64px;
+  border-bottom: 1px solid var(--ds-color-border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.ds-details-title {
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-color-text);
+}
+
+.ds-details-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ds-details-body {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 24px;
+}
+
+.ds-details-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ds-details-preview-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.ds-details-preview-grid {
+  position: absolute;
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-color-border);
+  background: var(--ds-color-surface);
+}
+
+.ds-details-preview-icon {
+  position: relative;
+  z-index: 10;
+}
+
+.ds-details-name {
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-color-text);
+  text-align: center;
+}
+
+.ds-details-size {
+  text-align: center;
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-text-muted);
+}
+
+.ds-details-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ds-details-download {
+  flex: 1;
+}
+
+.ds-details-code {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ds-details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ds-details-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ds-details-section-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-text-subtle);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.ds-details-code-block {
+  padding: 12px;
+  background: var(--ds-color-input);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-xs);
+  overflow-x: auto;
+  border: 1px solid var(--ds-color-border);
+  color: var(--ds-color-text);
+  font-family: 'Monaco', 'Courier New', monospace;
+  line-height: 1.5;
+  white-space: pre;
+}

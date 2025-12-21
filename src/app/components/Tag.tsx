@@ -1,4 +1,5 @@
 import { Check } from 'trinil-react';
+import './Tag.css';
 
 interface TagProps {
   label: string;
@@ -10,18 +11,10 @@ export function Tag({ label, selected, onClick }: TagProps) {
   return (
     <button
       onClick={onClick}
-      className={`
-        inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
-        transition-all duration-150 whitespace-nowrap
-        ${
-          selected
-            ? 'bg-neutral-900 text-white'
-            : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-        }
-      `}
+      className={`ds-tag ${selected ? 'selected' : ''}`}
     >
       {label}
-      {selected && <Check size={12} className="ml-0.5" />}
+      {selected && <Check size={12} style={{ marginLeft: '2px' }} />}
     </button>
   );
 }
