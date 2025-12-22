@@ -98,28 +98,33 @@ export default function App() {
   useEffect(() => {
     if (viewMode !== 'grouped') return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const theme = entry.target.getAttribute('data-theme')
-            if (theme) setActiveTheme(theme)
-          }
-        })
-      },
-      { 
-        threshold: 0.01,
-        rootMargin: '0px 0px -80% 0px'
-      }
-    )
+    // Delay to ensure DOM elements are mounted
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const theme = entry.target.getAttribute('data-theme')
+              if (theme) setActiveTheme(theme)
+            }
+          })
+        },
+        { 
+          threshold: 0.01,
+          rootMargin: '0px 0px -80% 0px'
+        }
+      )
 
-    // Observe all theme sections
-    Object.values(themeRefs.current).forEach((el) => {
-      if (el) observer.observe(el)
-    })
+      // Observe all theme sections
+      Object.values(themeRefs.current).forEach((el) => {
+        if (el) observer.observe(el)
+      })
 
-    return () => observer.disconnect()
-  }, [viewMode, Object.keys(themeRefs.current).length])
+      return () => observer.disconnect()
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [viewMode])
 
   // Scroll theme menu on mobile to show active theme
   useEffect(() => {
