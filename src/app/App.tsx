@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsMobile } from '@/components/ui/use-mobile'
-import UIKit from './UIKit'
+import Landing from './Landing'
+import Header from './components/Header'
 
 type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>
 
@@ -24,26 +25,8 @@ function isIconComponent(value: unknown): value is IconComponent {
 }
 
 export default function App() {
-  const [page, setPage] = useState<'home' | 'uikit'>('home')
-  
-  if (page === 'uikit') {
-    return (
-      <div className="bg-background text-foreground">
-        <div className="sticky top-0 z-50 border-b bg-card p-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => setPage('home')}
-            className="gap-2"
-          >
-            <TrinilIcons.ChevronLeft size={18} />
-            Back to Icons
-          </Button>
-        </div>
-        <UIKit />
-      </div>
-    )
-  }
-
+  // All hooks must be called before any conditional returns
+  const [page, setPage] = useState<'landing' | 'home'>('landing')
   const isMobile = useIsMobile()
   const iconEntries = useMemo(() => {
     return Object.entries(TrinilIcons).filter(([, component]) => isIconComponent(component))
@@ -54,13 +37,16 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'all' | 'grouped'>('grouped')
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
   const [framework, setFramework] = useState<'react' | 'vue'>('react')
-  const [activeTheme, setActiveTheme] = useState<string>('')
+  const [activeTheme, setActiveTheme] = useState<string>(THEMES[0] || '')
   const [copiedNpm, setCopiedNpm] = useState(false)
   const [copiedUsage, setCopiedUsage] = useState(false)
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const themeRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const filterRef = useRef<HTMLDivElement | null>(null)
   const filterButtonRef = useRef<HTMLButtonElement | null>(null)
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null)
+  const themeButtonsRef = useRef<Record<string, HTMLButtonElement | null>>({})
+  const themeMenuRef = useRef<HTMLDivElement | null>(null)
   
   const rawVersion = (appPkg as { dependencies?: Record<string, string> }).dependencies?.['trinil-react'] ?? 'unknown'
   const version = rawVersion.replace(/^[^0-9]*/, '')
@@ -92,11 +78,19 @@ export default function App() {
       setViewMode('grouped')
       setTimeout(() => {
         const element = themeRefs.current[theme]
-        if (element) {
-          const headerOffset = isMobile ? 80 : 72
-          window.scrollTo({ top: element.offsetTop - headerOffset, behavior: 'smooth' })
+        const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement
+        if (!element || !viewport) return
+        
+        if (isMobile) {
+          // Mobile: scroll with offset
+          const elementTop = element.offsetTop
+          const offset = Math.max(0, elementTop - 64)
+          viewport.scrollTo({ top: offset, behavior: 'smooth' })
+        } else {
+          // Desktop: normal scrollIntoView
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }
-      }, 50)
+      }, 200)
     }
   }
 
@@ -104,9 +98,6 @@ export default function App() {
   useEffect(() => {
     if (viewMode !== 'grouped') return
 
-    // Utiliser la même méthode sur mobile et desktop pour éviter les sauts
-    const rootMargin = '0px 0px -50% 0px'
-    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -116,15 +107,41 @@ export default function App() {
           }
         })
       },
-      { threshold: 0.1, rootMargin }
+      { 
+        threshold: 0.01,
+        rootMargin: '0px 0px -80% 0px'
+      }
     )
 
+    // Observe all theme sections
     Object.values(themeRefs.current).forEach((el) => {
       if (el) observer.observe(el)
     })
 
     return () => observer.disconnect()
-  }, [viewMode, iconsByTheme, isMobile])
+  }, [viewMode, Object.keys(themeRefs.current).length])
+
+  // Scroll theme menu on mobile to show active theme
+  useEffect(() => {
+    if (!isMobile || !themeMenuRef.current) return
+    
+    const activeButton = themeButtonsRef.current[activeTheme]
+    if (activeButton && themeMenuRef.current) {
+      const container = themeMenuRef.current
+      const button = activeButton
+      const containerRect = container.getBoundingClientRect()
+      const buttonRect = button.getBoundingClientRect()
+      
+      // Calculate scroll position to center the button
+      const scrollLeft = container.scrollLeft
+      const buttonLeft = button.offsetLeft
+      const buttonWidth = button.offsetWidth
+      const containerWidth = container.clientWidth
+      
+      const targetScroll = buttonLeft - (containerWidth - buttonWidth) / 2
+      container.scrollTo({ left: targetScroll, behavior: 'smooth' })
+    }
+  }, [activeTheme, isMobile])
 
   // Fermer le menu mobile quand on clique en dehors
   useEffect(() => {
@@ -240,13 +257,30 @@ export default function App() {
 
   const npmCommand = framework === 'react' ? 'npm install trinil-react' : 'npm install trinil-vue'
 
+  // Conditional render for Landing page
+  if (page === 'landing') {
+    return (
+      <Landing 
+        onNavigateToIcons={() => setPage('home')} 
+        onNavigateToDesignSystem={() => setPage('landing')}
+      />
+    )
+  }
+
+  // Mobile layout
   if (isMobile) {
     return (
       <TooltipProvider>
         <Toaster position="bottom-right" />
-        <div className="flex flex-col min-h-screen bg-background text-foreground">
-          {/* Mobile Header */}
-          <div className="sticky top-0 z-40 border-b bg-card p-4 space-y-3">
+        <div className="flex flex-col h-screen bg-background text-foreground">
+          <Header 
+            onNavigateHome={() => setPage('landing')}
+            onNavigateToIcons={() => setPage('home')}
+            onNavigateToDesignSystem={() => setPage('landing')}
+            currentPage="home"
+          />
+          {/* Mobile Controls with theme menu */}
+          <div className="sticky top-0 z-20 border-b bg-card p-4 space-y-4 -mt-px">
             <div className="flex gap-2 items-center">
               <SearchInput
                 id="search"
@@ -255,67 +289,56 @@ export default function App() {
                 onChange={(e) => setQuery(e.target.value)}
                 className="flex-1"
               />
-              <a
-                href="https://github.com/5e1y/trinil"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm transition-colors hover:bg-muted whitespace-nowrap"
+              <button
+                onClick={() => {
+                  const newSize = iconSize[0] === 60 ? 24 : iconSize[0] + 12
+                  setIconSize([newSize])
+                }}
+                className="flex items-center justify-center w-10 h-10 rounded-md border border-border hover:bg-accent transition-colors font-medium text-sm"
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.544 2.914 1.181.092-.916.35-1.544.636-1.9-2.22-.253-4.555-1.113-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.286.098-2.676 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.39.203 2.423.1 2.676.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.194 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-                GitHub
-              </a>
+                {iconSize[0]}
+              </button>
             </div>
             
-            {!mobileFilterOpen && (
-              <div className="flex gap-2 items-center">
-                <button
-                  ref={filterButtonRef}
-                  onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-                  className="flex-1 flex items-center justify-between px-3 py-3 rounded-md text-base transition-colors text-foreground hover:bg-muted/50 font-medium"
+            {/* Desktop-style theme menu for mobile */}
+            <nav className="flex flex-col gap-1">
+              {query && (
+                <Button
+                  variant={viewMode === 'all' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => handleThemeClick('all')}
+                  className="justify-start text-xs"
                 >
-                  {activeTheme || 'Select theme'}
-                  <TrinilIcons.ChevronDown size={22} />
-                </button>
-                <button
-                  onClick={() => {
-                    const newSize = iconSize[0] === 60 ? 24 : iconSize[0] + 12
-                    setIconSize([newSize])
-                  }}
-                  className="flex items-center justify-center w-10 h-10 rounded-md border border-border hover:bg-accent transition-colors font-medium text-sm"
-                >
-                  {iconSize[0]}
-                </button>
+                  All Results
+                </Button>
+              )}
+              <div className="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" ref={themeMenuRef}>
+                {THEMES.map((theme) => {
+                  const isActive = activeTheme === theme
+                  return (
+                    <Button
+                      key={theme}
+                      ref={(el) => {
+                        if (el) themeButtonsRef.current[theme] = el
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleThemeClick(theme)}
+                      className={`justify-start text-xs whitespace-nowrap transition-colors ${
+                        isActive ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {theme}
+                    </Button>
+                  )
+                })}
               </div>
-            )}
-
-            {/* Mobile Filter Menu */}
-            {mobileFilterOpen && (
-              <div ref={filterRef} className="space-y-1">
-                {THEMES.map((theme) => (
-                  <button
-                    key={theme}
-                    onClick={() => {
-                      handleThemeClick(theme)
-                      setMobileFilterOpen(false)
-                    }}
-                    className={`block w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                      activeTheme === theme
-                        ? 'bg-accent text-accent-foreground font-medium'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                    }`}
-                  >
-                    {theme}
-                  </button>
-                ))}
-              </div>
-            )}
+            </nav>
           </div>
 
           {/* Mobile Grid */}
           <div className="flex-1 overflow-hidden">
-            <ScrollArea className="h-full">
+            <ScrollArea className="h-full" ref={scrollAreaRef}>
               <div className="p-4">
                 {viewMode === 'grouped' ? (
                   <div className="space-y-8">
@@ -450,15 +473,10 @@ export default function App() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-medium text-muted-foreground">Usage example</label>
+                      <label className="text-xs font-medium text-muted-foreground">Usage</label>
                       <div className="relative">
                         <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
-                          <code className="whitespace-pre-wrap break-words">
-                            {framework === 'react' 
-                              ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
-                              : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
-                            }
-                          </code>
+                          <code className="whitespace-pre-wrap break-words">{usageCode}</code>
                         </pre>
                         <button
                           onClick={handleCopyUsage}
@@ -485,17 +503,18 @@ export default function App() {
   return (
     <TooltipProvider>
       <Toaster position="bottom-right" />
-      <div className="flex min-h-screen bg-background text-foreground">
+      <div className="flex flex-col h-screen bg-background text-foreground">
+      <Header 
+        onNavigateHome={() => setPage('landing')}
+        onNavigateToIcons={() => setPage('home')}
+        onNavigateToDesignSystem={() => setPage('landing')}
+        currentPage="home"
+      />
+      <div className="flex flex-1 overflow-hidden">
       {/* Panneau gauche - 280px fixe */}
-      <div className="w-70 shrink-0 border-r bg-card/50 sticky top-0 h-screen flex flex-col">
+      <div className="w-70 shrink-0 border-r bg-card/50 overflow-hidden flex flex-col">
         <ScrollArea className="flex-1">
           <div className="p-6 space-y-8">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Trinil <span className="ml-2 align-top text-xs font-medium text-muted-foreground">{version}</span>
-              </h2>
-            </div>
-            
             <div className="space-y-2">
               <SearchInput
                 id="search"
@@ -524,7 +543,7 @@ export default function App() {
                 
                 {/* Ligne indicatrice qui suit le thème actif */}
                 <div 
-                  className="absolute left-0 w-0.5 bg-primary rounded-full transition-all duration-300 ease-out"
+                  className="absolute left-0 w-0.5 bg-foreground transition-all duration-300 ease-out"
                   style={{
                     top: `calc(${THEMES.indexOf(activeTheme)} * (2.25rem + 0.25rem) + ${query ? 'calc(2.25rem + 0.25rem)' : '0px'})`,
                     height: '2.25rem',
@@ -562,32 +581,11 @@ export default function App() {
             </div>
           </div>
         </ScrollArea>
-
-        <div className="border-t p-6 space-y-3">
-          <button
-            onClick={() => setPage('uikit')}
-            className="flex h-10 w-full items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm transition-colors hover:bg-muted whitespace-nowrap justify-center"
-          >
-            <TrinilIcons.Palette size={18} />
-            Design System
-          </button>
-          <a
-            href="https://github.com/5e1y/trinil"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex h-10 items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm transition-colors hover:bg-muted whitespace-nowrap justify-center"
-          >
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.544 2.914 1.181.092-.916.35-1.544.636-1.9-2.22-.253-4.555-1.113-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.286.098-2.676 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.39.203 2.423.1 2.676.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.194 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-            </svg>
-            GitHub
-          </a>
-        </div>
       </div>
       
       {/* Panneau central - remplissage */}
       <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full">
+        <ScrollArea className="h-full" ref={scrollAreaRef}>
           <div className="p-6">
             {viewMode === 'grouped' ? (
               <div className="space-y-8">
@@ -654,7 +652,7 @@ export default function App() {
 
       {/* Panneau droite - 280px fixe desktop, fullscreen mobile */}
       {selectedIcon && (
-        <div className={isMobile ? "fixed inset-0 z-50 bg-background flex flex-col" : "w-70 shrink-0 border-l bg-card/50 sticky top-0 h-screen"}>
+        <div className={isMobile ? "fixed inset-0 z-50 bg-background flex flex-col" : "w-70 shrink-0 border-l bg-card/50 overflow-hidden flex flex-col"}>
           <ScrollArea className="h-full">
             <div className="p-6 space-y-8">
               <div className="flex items-center justify-between">
@@ -749,6 +747,7 @@ export default function App() {
           </ScrollArea>
         </div>
       )}
+      </div>
       </div>
     </TooltipProvider>
   )
