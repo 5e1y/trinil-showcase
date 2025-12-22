@@ -35,6 +35,7 @@ export default function App() {
   const [framework, setFramework] = useState<'react' | 'vue'>('react')
   const [activeTheme, setActiveTheme] = useState<string>('')
   const [copiedNpm, setCopiedNpm] = useState(false)
+  const [copiedUsage, setCopiedUsage] = useState(false)
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const themeRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const filterRef = useRef<HTMLDivElement | null>(null)
@@ -144,14 +145,46 @@ export default function App() {
       
       if (success) {
         setCopiedNpm(true)
-        toast.success('Copié dans le presse-papiers!')
+        toast.success('Copied to clipboard!', {
+          icon: <TrinilIcons.CircleCheck size={18} />
+        })
         setTimeout(() => setCopiedNpm(false), 2000)
       } else {
-        toast.error('Impossible de copier')
+        toast.error('Failed to copy', {
+          icon: <TrinilIcons.CircleCross size={18} />
+        })
       }
     } catch (error) {
       console.error('Copy error:', error)
-      toast.error('Impossible de copier')
+      toast.error('Failed to copy', {
+        icon: <TrinilIcons.CircleCross size={18} />
+      })
+    }
+  }
+
+  const handleCopyUsage = () => {
+    if (!selectedIcon) return
+    const usageCode = framework === 'react' 
+      ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
+      : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
+
+    const textArea = document.createElement('textarea')
+    textArea.value = usageCode
+    document.body.appendChild(textArea)
+    textArea.select()
+    const success = document.execCommand('copy')
+    document.body.removeChild(textArea)
+    
+    if (success) {
+      setCopiedUsage(true)
+      toast.success('Copied to clipboard!', {
+        icon: <TrinilIcons.CircleCheck size={18} />
+      })
+      setTimeout(() => setCopiedUsage(false), 2000)
+    } else {
+      toast.error('Failed to copy', {
+        icon: <TrinilIcons.CircleCross size={18} />
+      })
     }
   }
 
@@ -205,7 +238,7 @@ export default function App() {
                 href="https://github.com/5e1y/trinil"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors hover:border-ring hover:bg-muted/50 whitespace-nowrap"
+                className="flex h-10 items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm transition-colors hover:bg-muted whitespace-nowrap"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.544 2.914 1.181.092-.916.35-1.544.636-1.9-2.22-.253-4.555-1.113-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.286.098-2.676 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.39.203 2.423.1 2.676.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.194 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" clipRule="evenodd" />
@@ -276,7 +309,7 @@ export default function App() {
                           className="space-y-3"
                         >
                           <h3 className="text-sm font-semibold text-foreground">{theme}</h3>
-                          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(72px,1fr))] gap-2">
+                          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
                             {icons.map(([name, Icon]) => (
                               <Tooltip key={name}>
                                 <TooltipTrigger asChild>
@@ -301,7 +334,7 @@ export default function App() {
                     })}
                   </div>
                 ) : (
-                  <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(72px,1fr))] gap-2">
+                  <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
                     {filteredEntries.map(([name, Icon]) => (
                       <Tooltip key={name}>
                         <TooltipTrigger asChild>
@@ -326,10 +359,10 @@ export default function App() {
             </ScrollArea>
           </div>
 
-          {/* Mobile Detail Panel Fullscreen */}
-          {isMobile && selectedIcon && (
+          {/* Details Panel - Fullscreen on mobile */}
+          {selectedIcon && (
             <div className="fixed inset-0 z-50 bg-background flex flex-col">
-              <div className="flex-1 overflow-y-auto">
+              <ScrollArea className="h-full">
                 <div className="p-6 space-y-8">
                   <div className="flex items-center justify-between">
                     <h3 className="text-base font-semibold text-foreground">Details</h3>
@@ -346,8 +379,8 @@ export default function App() {
                       <div className="relative" style={{ width: '120px', height: '120px' }}>
                         <div className="absolute inset-0 grid-pattern-12" style={{ backgroundPosition: '0 0' }} />
                         {selectedIcon && (() => {
-                          const Icon = TrinilIcons[selectedIcon as keyof typeof TrinilIcons] as any
-                          return Icon ? <Icon size={120} className="text-foreground relative z-10" /> : <span>Icon not found</span>
+                          const Icon = TrinilIcons[selectedIcon as keyof typeof TrinilIcons] as IconComponent
+                          return Icon ? <Icon size={120} className="text-foreground relative z-10" /> : null
                         })()}
                       </div>
                     </div>
@@ -355,6 +388,14 @@ export default function App() {
                   </div>
 
                   <div className="space-y-4">
+                    <button
+                      onClick={handleDownload}
+                      className="w-full px-3 py-2 h-10 rounded-md border border-border bg-background hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                    >
+                      <TrinilIcons.Download size={18} />
+                      Download SVG
+                    </button>
+
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Framework</label>
                       <Select value={framework} onValueChange={(val) => setFramework(val as 'react' | 'vue')}>
@@ -369,35 +410,48 @@ export default function App() {
                     </div>
 
                     <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground">Installation</label>
                       <div className="relative">
-                        <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto">
-                          <code>{npmCommand}</code>
+                        <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
+                          <code className="whitespace-pre-wrap break-words">{npmCommand}</code>
                         </pre>
-                        <Button
-                          size="sm"
-                          variant="ghost"
+                        <button
                           onClick={handleCopyNpm}
-                          className="absolute right-2 top-2 h-6 px-2"
+                          className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
                         >
                           {copiedNpm ? (
-                            <TrinilIcons.Check size={18} />
+                            <TrinilIcons.Check size={16} />
                           ) : (
-                            <TrinilIcons.Copy size={18} />
+                            <TrinilIcons.Copy size={16} />
                           )}
-                        </Button>
+                        </button>
                       </div>
                     </div>
 
-                    <button
-                      onClick={handleDownload}
-                      className="w-full px-3 py-2 rounded-md border border-border hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
-                    >
-                      <TrinilIcons.Download size={18} />
-                      Download SVG
-                    </button>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground">Usage example</label>
+                      <div className="relative">
+                        <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
+                          <code className="whitespace-pre-wrap break-words">{framework === 'react' 
+                          ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
+                          : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
+                        }</code>
+                        </pre>
+                        <button
+                          onClick={handleCopyUsage}
+                          className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
+                        >
+                          {copiedUsage ? (
+                            <TrinilIcons.Check size={16} />
+                          ) : (
+                            <TrinilIcons.Copy size={16} />
+                          )}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </ScrollArea>
             </div>
           )}
         </div>
@@ -410,8 +464,8 @@ export default function App() {
       <Toaster position="bottom-right" />
       <div className="flex min-h-screen bg-background text-foreground">
       {/* Panneau gauche - 280px fixe */}
-      <div className="w-70 shrink-0 border-r bg-card/50 sticky top-0 h-screen">
-        <ScrollArea className="h-full">
+      <div className="w-70 shrink-0 border-r bg-card/50 sticky top-0 h-screen flex flex-col">
+        <ScrollArea className="flex-1">
           <div className="p-6 space-y-8">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight">
@@ -483,22 +537,22 @@ export default function App() {
                 })}
               </nav>
             </div>
-            
-            <div className="pt-8">
-              <a
-                href="https://github.com/5e1y/trinil"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-md border border-border hover:bg-muted transition-colors text-sm font-medium"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.544 2.914 1.181.092-.916.35-1.544.636-1.9-2.22-.253-4.555-1.113-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.286.098-2.676 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.39.203 2.423.1 2.676.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.194 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-                GitHub
-              </a>
-            </div>
           </div>
         </ScrollArea>
+
+        <div className="border-t p-6">
+          <a
+            href="https://github.com/5e1y/trinil"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-10 items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm transition-colors hover:bg-muted whitespace-nowrap justify-center"
+          >
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.544 2.914 1.181.092-.916.35-1.544.636-1.9-2.22-.253-4.555-1.113-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.286.098-2.676 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.39.203 2.423.1 2.676.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.194 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+            </svg>
+            GitHub
+          </a>
+        </div>
       </div>
       
       {/* Panneau central - remplissage */}
@@ -568,9 +622,9 @@ export default function App() {
         </ScrollArea>
       </div>
 
-      {/* Panneau droite - 280px fixe, caché si pas d'icône */}
+      {/* Panneau droite - 280px fixe desktop, fullscreen mobile */}
       {selectedIcon && (
-        <div className="w-70 shrink-0 border-l bg-card/50 sticky top-0 h-screen">
+        <div className={isMobile ? "fixed inset-0 z-50 bg-background flex flex-col" : "w-70 shrink-0 border-l bg-card/50 sticky top-0 h-screen"}>
           <ScrollArea className="h-full">
             <div className="p-6 space-y-8">
               <div className="flex items-center justify-between">
@@ -597,6 +651,14 @@ export default function App() {
               </div>
 
               <div className="space-y-4">
+                <button
+                  onClick={handleDownload}
+                  className="w-full px-3 py-2 h-10 rounded-md border border-border bg-background hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                >
+                  <TrinilIcons.Download size={18} />
+                  Download SVG
+                </button>
+
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">Framework</label>
                   <Select value={framework} onValueChange={(val) => setFramework(val as 'react' | 'vue')}>
@@ -611,32 +673,45 @@ export default function App() {
                 </div>
 
                 <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Installation</label>
                   <div className="relative">
-                    <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto">
-                      <code>{npmCommand}</code>
+                    <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
+                      <code className="whitespace-pre-wrap break-words">{npmCommand}</code>
                     </pre>
-                    <Button
-                      size="sm"
-                      variant="ghost"
+                    <button
                       onClick={handleCopyNpm}
-                      className="absolute right-2 top-2 h-6 px-2"
+                      className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
                     >
                       {copiedNpm ? (
-                        <TrinilIcons.Check size={18} />
+                        <TrinilIcons.Check size={16} />
                       ) : (
-                        <TrinilIcons.Copy size={18} />
+                        <TrinilIcons.Copy size={16} />
                       )}
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
-                <button
-                  onClick={handleDownload}
-                  className="w-full px-3 py-2 rounded-md border border-border hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
-                >
-                  <TrinilIcons.Download size={18} />
-                  Download SVG
-                </button>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Usage example</label>
+                  <div className="relative">
+                    <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
+                      <code className="whitespace-pre-wrap break-words">{framework === 'react' 
+                      ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
+                      : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
+                    }</code>
+                    </pre>
+                    <button
+                      onClick={handleCopyUsage}
+                      className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
+                    >
+                      {copiedUsage ? (
+                        <TrinilIcons.Check size={16} />
+                      ) : (
+                        <TrinilIcons.Copy size={16} />
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </ScrollArea>
