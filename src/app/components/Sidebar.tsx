@@ -1,9 +1,9 @@
-import { ExternalLink } from 'trinil-react';
+import React, { useState, useEffect } from 'react';
+import { TextInput } from '@primer/react';
+import { LinkExternalIcon } from '@primer/octicons-react';
 import { IconSlider } from './IconSlider';
 import { Button } from './Button';
 import { TagFilter } from './TagFilter';
-import { useState, useEffect } from 'react';
-import './Sidebar.css';
 
 interface SidebarProps {
   iconSize: number;
@@ -40,26 +40,36 @@ export function Sidebar({
   return (
     <aside className="ds-sidebar">
       <div className="ds-sidebar-content">
-        <h1 className="ds-sidebar-title">
-          Trinil
-          {version && <span className="ds-sidebar-version">v{version}</span>}
-        </h1>
+        <div>
+          <h1 style={{ margin: 0, fontSize: 'var(--fontSize-large)', fontWeight: 'var(--fontWeight-bold)' }}>
+            Trinil
+            {version && (
+              <span style={{ fontSize: 'var(--fontSize-small)', color: 'var(--fgColor-muted)', marginLeft: '4px' }}>
+                v{version}
+              </span>
+            )}
+          </h1>
+        </div>
 
         <div style={{ position: 'relative' }}>
-          <input
-            type="text"
+          <TextInput
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search icons..."
-            className="ds-input"
             aria-label="Search icons"
+            block
           />
           {search && (
             <Button
               onClick={() => onSearchChange('')}
               icon
-              variant="secondary"
-              style={{ position: 'absolute', right: '4px', top: '50%', transform: 'translateY(-50%)', marginTop: 0 }}
+              variant="ghost"
+              style={{
+                position: 'absolute',
+                right: '4px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+              }}
               aria-label="Clear search"
             >
               ✕
@@ -68,11 +78,18 @@ export function Sidebar({
         </div>
 
         <IconSlider value={iconSize} onChange={onSizeChange} />
-
         <TagFilter selectedTags={selectedTags} onTagsChange={onTagsChange} />
 
-        <div className="ds-sidebar-info">
-          <p>Style is locked. Only size can be customized.</p>
+        <div
+          style={{
+            padding: 'var(--spacing-3)',
+            backgroundColor: 'var(--bgColor-secondary)',
+            borderRadius: 'var(--borderRadius-medium)',
+          }}
+        >
+          <p style={{ margin: 0, fontSize: 'var(--fontSize-small)', color: 'var(--fgColor-muted)' }}>
+            Style is locked. Only size can be customized.
+          </p>
         </div>
       </div>
 
@@ -81,8 +98,8 @@ export function Sidebar({
           onClick={() => window.open(githubUrl, '_blank')}
           variant="primary"
         >
-          <ExternalLink size={20} />
-          <span>GitHub</span>
+          <LinkExternalIcon size={16} />
+          <span style={{ marginLeft: '4px' }}>GitHub</span>
         </Button>
       </div>
     </aside>

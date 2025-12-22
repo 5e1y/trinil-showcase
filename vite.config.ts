@@ -11,9 +11,20 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  server: {
+    host: true,
+    port: 5173,
+    watch: {
+      usePolling: true,
+      interval: 200,
+    },
+  },
   resolve: {
     alias: {
       '@': `${dirname(__filename)}/src`,
     },
+  },
+  optimizeDeps: {
+    exclude: ['trinil-react'],
   },
 })

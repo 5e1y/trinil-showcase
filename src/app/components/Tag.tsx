@@ -1,20 +1,27 @@
-import { Check } from 'trinil-react';
-import './Tag.css';
+import React from 'react';
+import { Button } from '@primer/react';
+import { CheckIcon } from '@primer/octicons-react';
 
 interface TagProps {
   label: string;
   selected: boolean;
   onClick: () => void;
+  className?: string;
 }
 
-export function Tag({ label, selected, onClick }: TagProps) {
+export function Tag({ label, selected, onClick, className = '' }: TagProps) {
   return (
-    <button
+    <Button
       onClick={onClick}
-      className={`ds-tag ${selected ? 'selected' : ''}`}
+      variant={selected ? 'primary' : 'default'}
+      size="small"
+      className={className}
+      aria-pressed={selected}
     >
       {label}
-      {selected && <Check size={12} style={{ marginLeft: '2px' }} />}
-    </button>
+      {selected && (
+        <CheckIcon size={12} style={{ marginLeft: '4px' }} />
+      )}
+    </Button>
   );
 }
