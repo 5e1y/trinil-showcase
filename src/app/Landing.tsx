@@ -348,8 +348,8 @@ function BookingCard() {
     <div className="bg-white rounded-lg p-6 w-full h-full space-y-4 flex flex-col justify-center">
       <div className="space-y-1">
         <h3 className="font-semibold text-lg">Ngawi, Indonesia</h3>
-        <p className="text-sm text-muted-foreground flex items-center gap-1">
-          <TrinilIcons.Location size={14} />
+        <p className="text-sm text-muted-foreground flex items-center">
+          <TrinilIcons.Location size={18} className="mr-2 shrink-0" />
           East Java
         </p>
       </div>
@@ -363,11 +363,11 @@ function BookingCard() {
               <Button
                 variant="outline"
                 className={cn(
-                  "h-9 w-full justify-between px-3 py-2 font-normal text-sm",
+                  "h-9 w-full px-3 py-2 font-normal text-sm flex items-center",
                   !checkIn && "text-muted-foreground"
                 )}
               >
-                <TrinilIcons.Calandar size={14} className="mr-2 shrink-0" />
+                  <TrinilIcons.Calandar size={18} className="mr-2 shrink-0" />
                 <span className="flex-1 text-left truncate">
                   {checkIn ? format(checkIn, "MMM d") : "Select"}
                 </span>
@@ -390,11 +390,11 @@ function BookingCard() {
               <Button
                 variant="outline"
                 className={cn(
-                  "h-9 w-full justify-between px-3 py-2 font-normal text-sm",
+                  "h-9 w-full px-3 py-2 font-normal text-sm flex items-center",
                   !checkOut && "text-muted-foreground"
                 )}
               >
-                <TrinilIcons.Calandar size={14} className="mr-2 shrink-0" />
+                  <TrinilIcons.Calandar size={18} className="mr-2 shrink-0" />
                 <span className="flex-1 text-left truncate">
                   {checkOut ? format(checkOut, "MMM d") : "Select"}
                 </span>
@@ -416,7 +416,7 @@ function BookingCard() {
         <label className="text-xs font-medium text-muted-foreground block mb-1">Guests</label>
         <Select value={guests} onValueChange={setGuests}>
           <SelectTrigger className="h-9">
-            <TrinilIcons.User size={14} className="mr-2 shrink-0" />
+              <TrinilIcons.User size={18} className="mr-2 shrink-0" />
             <span className="flex-1 text-left truncate">
               <SelectValue />
             </span>
