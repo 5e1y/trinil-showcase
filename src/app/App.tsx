@@ -98,6 +98,8 @@ export default function App() {
   useEffect(() => {
     if (viewMode !== 'grouped') return
 
+    let cleanup: (() => void) | undefined
+
     if (isMobile) {
       // Mobile : IntersectionObserver sur ScrollArea
       const viewportElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
@@ -120,7 +122,7 @@ export default function App() {
       Object.values(themeRefs.current).forEach((el) => {
         if (el) observer.observe(el)
       })
-      return () => observer.disconnect()
+      cleanup = () => observer.disconnect()
     } else {
       // Desktop : handler manuel sur le viewport du ScrollArea
       const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement
@@ -156,10 +158,11 @@ export default function App() {
         }
       }
       viewport.addEventListener('scroll', handleScroll, { passive: true })
-      // Appel initial
-      handleScroll()
-      return () => viewport.removeEventListener('scroll', handleScroll)
+      // Appel initial à chaque montage ou reload
+      setTimeout(handleScroll, 0)
+      cleanup = () => viewport.removeEventListener('scroll', handleScroll)
     }
+    return cleanup
   }, [viewMode, isMobile, Object.keys(themeRefs.current).length])
 
   // Scroll theme menu on mobile to show active theme
