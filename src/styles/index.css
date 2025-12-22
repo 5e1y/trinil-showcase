@@ -1,35 +1,80 @@
-/* Primer Design System - Official GitHub Design Tokens */
-@import '@primer/primitives/dist/css/base/size/size.css';
-@import '@primer/primitives/dist/css/functional/size/border.css';
-@import '@primer/primitives/dist/css/functional/size/size.css';
-@import '@primer/primitives/dist/css/base/typography/typography.css';
-@import '@primer/primitives/dist/css/functional/typography/typography.css';
-@import '@primer/primitives/dist/css/functional/themes/light.css';
-@import '@primer/primitives/dist/css/functional/themes/dark.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Global base styles */
-body {
-  font-family: var(--fontFamily-default);
-  color: var(--fgColor-default);
-  background-color: var(--bgColor-default);
-  margin: 0;
-  padding: 0;
-  transition: background-color 0.2s, color 0.2s;
+:root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 46%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 9%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 9%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 0 0% 65%;
+  --radius: 0.5rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-weight: var(--fontWeight-bold);
+.dark {
+  --background: 0 0% 9%;
+  --foreground: 0 0% 98%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
+  --popover: 0 0% 9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 0 0% 9%;
+  --card-foreground: 0 0% 98%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 0 0% 9%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 0 0% 15%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 0 0% 65%;
 }
 
-a {
-  color: var(--fgColor-accent);
-  text-decoration: none;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen antialiased;
+  }
 }
 
-a:hover {
-  text-decoration: underline;
+@layer utilities {
+  .grid-pattern-12 {
+    background-image:
+      linear-gradient(
+        to right,
+        hsl(var(--border)) 0px,
+        hsl(var(--border)) 1px,
+        transparent 1px,
+        transparent 10px
+      ),
+      linear-gradient(
+        to bottom,
+        hsl(var(--border)) 0px,
+        hsl(var(--border)) 1px,
+        transparent 1px,
+        transparent 10px
+      );
+    background-size: 10px 10px;
+    background-position: 0 0;
+  }
 }
-
-/* Custom components using Primer tokens */
-@import './custom-components.css';

@@ -1,7 +1,8 @@
-import { ExternalLink, SettingsVertical } from 'trinil-react';
+import React from 'react';
+import { TextInput } from '@primer/react';
+import { LinkExternalIcon, GearIcon } from '@primer/octicons-react';
 import { IconSlider } from './IconSlider';
 import { Button } from './Button';
-import './MobileHeader.css';
 
 interface MobileHeaderProps {
   iconSize: number;
@@ -26,19 +27,18 @@ export function MobileHeader({
     <div className="ds-mobile-header">
       <div className="ds-mobile-header-search">
         <div className="ds-mobile-header-search-input" style={{ position: 'relative' }}>
-          <input
-            type="text"
+          <TextInput
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search icons..."
-            className="ds-input"
             aria-label="Search icons"
+            block
           />
           {search && (
             <Button
               onClick={() => onSearchChange('')}
               icon
-              variant="secondary"
+              variant="ghost"
               style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)' }}
               aria-label="Clear search"
             >
@@ -51,8 +51,8 @@ export function MobileHeader({
           variant="primary"
           style={{ flex: '0 0 auto', height: '44px', paddingLeft: '12px', paddingRight: '12px' }}
         >
-          <ExternalLink size={16} />
-          <span>GitHub</span>
+          <LinkExternalIcon size={16} />
+          <span style={{ marginLeft: '4px' }}>GitHub</span>
         </Button>
       </div>
 
@@ -67,7 +67,7 @@ export function MobileHeader({
             icon
             aria-label="Toggle themes menu"
           >
-            <SettingsVertical size={16} />
+            <GearIcon size={16} />
           </Button>
           {selectedTagsCount > 0 && (
             <span className="ds-mobile-header-badge">

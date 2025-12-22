@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import './Tooltip.css';
+import React, { useEffect, useState } from 'react';
 
 interface TooltipProps {
   iconName: string;
@@ -49,24 +48,41 @@ export function Tooltip({ iconName, x, top, bottom }: TooltipProps) {
         transform: 'translateX(-50%)',
       }}
     >
-      <div className="bg-neutral-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+      <div
+        style={{
+          backgroundColor: 'var(--bgColor-neutral-emphasis)',
+          color: 'var(--fgColor-onEmphasis)',
+          fontSize: 'var(--fontSize-small)',
+          padding: '6px 10px',
+          borderRadius: 'var(--borderRadius-medium)',
+          boxShadow: 'none',
+          whiteSpace: 'nowrap',
+          position: 'relative',
+        }}
+      >
         {iconName}
-        {/* Arrow pointing up when tooltip is below the icon */}
         {position.placement === 'bottom' && (
           <div
-            className="absolute w-2 h-2 bg-neutral-900 transform rotate-45"
             style={{
+              position: 'absolute',
+              width: '8px',
+              height: '8px',
+              backgroundColor: 'var(--bgColor-neutral-emphasis)',
+              transform: 'rotate(45deg)',
               left: '50%',
               top: '-4px',
               marginLeft: '-4px',
             }}
           />
         )}
-        {/* Arrow pointing down when tooltip is above the icon */}
         {position.placement === 'top' && (
           <div
-            className="absolute w-2 h-2 bg-neutral-900 transform rotate-45"
             style={{
+              position: 'absolute',
+              width: '8px',
+              height: '8px',
+              backgroundColor: 'var(--bgColor-neutral-emphasis)',
+              transform: 'rotate(45deg)',
               left: '50%',
               bottom: '-4px',
               marginLeft: '-4px',
