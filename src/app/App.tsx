@@ -94,76 +94,76 @@ export default function App() {
     }
   }
 
-  // Scroll spy - détecte quelle section est visible
+  // Scroll spy - détecte quelle section est visible (uniquement sur la page /icon)
   useEffect(() => {
-    if (viewMode !== 'grouped') return
+    if (page !== 'home' || viewMode !== 'grouped') return;
 
-    let cleanup: (() => void) | undefined
+    let cleanup: (() => void) | undefined;
 
     if (isMobile) {
       // Mobile : IntersectionObserver sur ScrollArea
-      const viewportElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
+      const viewportElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
       const observer = new IntersectionObserver(
         (entries) => {
-          const visible = entries.filter(e => e.isIntersecting)
+          const visible = entries.filter(e => e.isIntersecting);
           if (visible.length > 0) {
             const topMost = visible.reduce((acc, entry) => {
-              return entry.boundingClientRect.top < acc.boundingClientRect.top ? entry : acc
-            })
-            const theme = topMost.target.getAttribute('data-theme')
-            if (theme) setActiveTheme(theme)
+              return entry.boundingClientRect.top < acc.boundingClientRect.top ? entry : acc;
+            });
+            const theme = topMost.target.getAttribute('data-theme');
+            if (theme) setActiveTheme(theme);
           }
         },
         {
           root: viewportElement || null,
           threshold: [0, 0.25, 0.5, 0.75, 1]
         }
-      )
+      );
       Object.values(themeRefs.current).forEach((el) => {
-        if (el) observer.observe(el)
-      })
-      cleanup = () => observer.disconnect()
+        if (el) observer.observe(el);
+      });
+      cleanup = () => observer.disconnect();
     } else {
       // Desktop : handler manuel sur le viewport du ScrollArea
-      const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement
-      if (!viewport) return
+      const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+      if (!viewport) return;
       const handleScroll = () => {
-        const headings = Object.values(themeRefs.current).filter(Boolean)
-        let closest = null
-        let minDist = Infinity
+        const headings = Object.values(themeRefs.current).filter(Boolean);
+        let closest = null;
+        let minDist = Infinity;
         headings.forEach((el) => {
-          const rect = el.getBoundingClientRect()
-          const viewportRect = viewport.getBoundingClientRect()
-          const top = rect.top - viewportRect.top
+          const rect = el.getBoundingClientRect();
+          const viewportRect = viewport.getBoundingClientRect();
+          const top = rect.top - viewportRect.top;
           if (top >= 0 && top < minDist) {
-            minDist = top
-            closest = el
+            minDist = top;
+            closest = el;
           }
-        })
+        });
         if (!closest) {
           // Si aucune n'est sous le viewport, prendre la dernière passée
           headings.forEach((el) => {
-            const rect = el.getBoundingClientRect()
-            const viewportRect = viewport.getBoundingClientRect()
-            const top = rect.top - viewportRect.top
+            const rect = el.getBoundingClientRect();
+            const viewportRect = viewport.getBoundingClientRect();
+            const top = rect.top - viewportRect.top;
             if (top < 0 && Math.abs(top) < minDist) {
-              minDist = Math.abs(top)
-              closest = el
+              minDist = Math.abs(top);
+              closest = el;
             }
-          })
+          });
         }
         if (closest) {
-          const theme = closest.getAttribute('data-theme')
-          if (theme) setActiveTheme(theme)
+          const theme = closest.getAttribute('data-theme');
+          if (theme) setActiveTheme(theme);
         }
-      }
-      viewport.addEventListener('scroll', handleScroll, { passive: true })
+      };
+      viewport.addEventListener('scroll', handleScroll, { passive: true });
       // Appel initial à chaque montage ou reload
-      setTimeout(handleScroll, 0)
-      cleanup = () => viewport.removeEventListener('scroll', handleScroll)
+      setTimeout(handleScroll, 0);
+      cleanup = () => viewport.removeEventListener('scroll', handleScroll);
     }
-    return cleanup
-  }, [viewMode, isMobile, Object.keys(themeRefs.current).length])
+    return cleanup;
+  }, [page, viewMode, isMobile, Object.keys(themeRefs.current).length]);
 
   // Scroll theme menu on mobile to show active theme
   useEffect(() => {
