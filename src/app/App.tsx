@@ -82,8 +82,8 @@ export default function App() {
   useEffect(() => {
     if (viewMode !== 'grouped') return
 
-    // Sur mobile, utiliser une marge plus adaptée
-    const rootMargin = isMobile ? '0px 0px -50% 0px' : '0px 0px -80% 0px'
+    // Utiliser la même méthode sur mobile et desktop pour éviter les sauts
+    const rootMargin = '0px 0px -50% 0px'
     
     const observer = new IntersectionObserver(
       (entries) => {
