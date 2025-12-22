@@ -98,33 +98,69 @@ export default function App() {
   useEffect(() => {
     if (viewMode !== 'grouped') return
 
-    // Delay to ensure DOM elements are mounted
-    const timer = setTimeout(() => {
+    if (isMobile) {
+      // Mobile : IntersectionObserver sur ScrollArea
+      const viewportElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
       const observer = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const theme = entry.target.getAttribute('data-theme')
-              if (theme) setActiveTheme(theme)
-            }
-          })
+          const visible = entries.filter(e => e.isIntersecting)
+          if (visible.length > 0) {
+            const topMost = visible.reduce((acc, entry) => {
+              return entry.boundingClientRect.top < acc.boundingClientRect.top ? entry : acc
+            })
+            const theme = topMost.target.getAttribute('data-theme')
+            if (theme) setActiveTheme(theme)
+          }
         },
-        { 
-          threshold: 0.01,
-          rootMargin: '0px 0px -80% 0px'
+        {
+          root: viewportElement || null,
+          threshold: [0, 0.25, 0.5, 0.75, 1]
         }
       )
-
-      // Observe all theme sections
       Object.values(themeRefs.current).forEach((el) => {
         if (el) observer.observe(el)
       })
-
       return () => observer.disconnect()
-    }, 100)
-
-    return () => clearTimeout(timer)
-  }, [viewMode])
+    } else {
+      // Desktop : handler manuel sur le viewport du ScrollArea
+      const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement
+      if (!viewport) return
+      const handleScroll = () => {
+        const headings = Object.values(themeRefs.current).filter(Boolean)
+        let closest = null
+        let minDist = Infinity
+        headings.forEach((el) => {
+          const rect = el.getBoundingClientRect()
+          const viewportRect = viewport.getBoundingClientRect()
+          const top = rect.top - viewportRect.top
+          if (top >= 0 && top < minDist) {
+            minDist = top
+            closest = el
+          }
+        })
+        if (!closest) {
+          // Si aucune n'est sous le viewport, prendre la dernière passée
+          headings.forEach((el) => {
+            const rect = el.getBoundingClientRect()
+            const viewportRect = viewport.getBoundingClientRect()
+            const top = rect.top - viewportRect.top
+            if (top < 0 && Math.abs(top) < minDist) {
+              minDist = Math.abs(top)
+              closest = el
+            }
+          })
+        }
+        if (closest) {
+          const theme = closest.getAttribute('data-theme')
+          if (theme) setActiveTheme(theme)
+        }
+      }
+      viewport.addEventListener('scroll', handleScroll, { passive: true })
+      // Appel initial
+      handleScroll()
+      return () => viewport.removeEventListener('scroll', handleScroll)
+    }
+  }, [viewMode, isMobile, Object.keys(themeRefs.current).length])
 
   // Scroll theme menu on mobile to show active theme
   useEffect(() => {
@@ -353,11 +389,15 @@ export default function App() {
                       return (
                         <div
                           key={theme}
-                          ref={(el) => (themeRefs.current[theme] = el)}
-                          data-theme={theme}
                           className="space-y-3"
                         >
-                          <h3 className="text-sm font-semibold text-foreground">{theme}</h3>
+                          <h3
+                            ref={(el) => (themeRefs.current[theme] = el)}
+                            data-theme={theme}
+                            className="text-sm font-semibold text-foreground"
+                          >
+                            {theme}
+                          </h3>
                           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-3">
                             {icons.map(([name, Icon]) => (
                               <Tooltip key={name}>
