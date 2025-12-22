@@ -43,7 +43,11 @@ export default function Header({
   return (
     <nav className={cn(
       "border-b",
-      isMobile ? "sticky top-0 z-50 bg-background" : "relative bg-background/80 backdrop-blur-sm"
+      currentPage === "landing"
+        ? "sticky top-0 z-50 bg-background"
+        : isMobile
+          ? "sticky top-0 z-50 bg-background"
+          : "relative bg-background/80 backdrop-blur-sm"
     )}>
       <div className="px-6 flex items-center justify-between">
         <button 
