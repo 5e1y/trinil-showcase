@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsMobile } from '@/components/ui/use-mobile'
+import UIKit from './UIKit'
 
 type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>
 
@@ -23,6 +24,26 @@ function isIconComponent(value: unknown): value is IconComponent {
 }
 
 export default function App() {
+  const [page, setPage] = useState<'home' | 'uikit'>('home')
+  
+  if (page === 'uikit') {
+    return (
+      <div className="bg-background text-foreground">
+        <div className="sticky top-0 z-50 border-b bg-card p-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => setPage('home')}
+            className="gap-2"
+          >
+            <TrinilIcons.ChevronLeft size={18} />
+            Back to Icons
+          </Button>
+        </div>
+        <UIKit />
+      </div>
+    )
+  }
+
   const isMobile = useIsMobile()
   const iconEntries = useMemo(() => {
     return Object.entries(TrinilIcons).filter(([, component]) => isIconComponent(component))
@@ -542,7 +563,14 @@ export default function App() {
           </div>
         </ScrollArea>
 
-        <div className="border-t p-6">
+        <div className="border-t p-6 space-y-3">
+          <button
+            onClick={() => setPage('uikit')}
+            className="flex h-10 w-full items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm transition-colors hover:bg-muted whitespace-nowrap justify-center"
+          >
+            <TrinilIcons.Palette size={18} />
+            Design System
+          </button>
           <a
             href="https://github.com/5e1y/trinil"
             target="_blank"
