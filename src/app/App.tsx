@@ -432,10 +432,12 @@ export default function App() {
                       <label className="text-xs font-medium text-muted-foreground">Usage example</label>
                       <div className="relative">
                         <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
-                          <code className="whitespace-pre-wrap break-words">{framework === 'react' 
-                          ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
-                          : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
-                        }</code>
+                          <code className="whitespace-pre-wrap break-words">
+                            {framework === 'react' 
+                              ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
+                              : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
+                            }
+                          </code>
                         </pre>
                         <button
                           onClick={handleCopyUsage}
@@ -695,10 +697,12 @@ export default function App() {
                   <label className="text-xs font-medium text-muted-foreground">Usage example</label>
                   <div className="relative">
                     <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
-                      <code className="whitespace-pre-wrap break-words">{framework === 'react' 
-                      ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
-                      : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
-                    }</code>
+                      <code className="whitespace-pre-wrap break-words">
+                        {(framework === 'react' 
+                          ? 'import { ' + selectedIcon + ' } from \'trinil-react\'\n\nfunction App() {\n  return (\n    <' + selectedIcon + '\n      size={24}\n      className="text-blue-500"\n      aria-label="' + selectedIcon + '"\n    />\n  )\n}'
+                          : 'import { ' + selectedIcon + ' } from \'trinil-vue\'\n\n<template>\n  <' + selectedIcon + '\n    :size="24"\n    class="text-blue-500"\n    aria-label="' + selectedIcon + '"\n  />\n</template>'
+                        )}
+                      </code>
                     </pre>
                     <button
                       onClick={handleCopyUsage}
@@ -717,7 +721,6 @@ export default function App() {
           </ScrollArea>
         </div>
       )}
-      </div>
     </TooltipProvider>
   )
 }
