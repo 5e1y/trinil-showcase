@@ -170,7 +170,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
         />
 
         {/* Hero Section */}
-        <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+        <section className="relative pt-48 pb-40 px-6 overflow-hidden">
           {/* Floating icons */}
           {floatingIcons.map((icon, index) => (
             <FloatingIcon
@@ -187,7 +187,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Simple, professional Open-source icons for your interfaces
+              Simple, professional Open-source icons
             </motion.h1>
             
             {/* KPI Badges */}
