@@ -10,6 +10,15 @@ import { useEffect, useRef } from 'react'
  * @param shuffleInterval Intervalle entre chaque shuffle (ms)
  * @param setSlotStates Setter pour l'état d'animation de chaque slot (icône)
  */
+interface UseSlotShuffleAnimationStableProps {
+  trigger: any;
+  onShuffleEnd: (index: number) => void;
+  iconBundles: any[];
+  shuffleDuration?: number;
+  shuffleInterval?: number;
+  setSlotStates: (states: number[]) => void;
+}
+
 export function useSlotShuffleAnimationStable({
   trigger,
   onShuffleEnd,
@@ -17,9 +26,9 @@ export function useSlotShuffleAnimationStable({
   shuffleDuration = 700,
   shuffleInterval = 60,
   setSlotStates,
-}) {
-  const shuffleTimeout = useRef(null)
-  const shuffleStep = useRef(null)
+}: UseSlotShuffleAnimationStableProps) {
+  const shuffleTimeout = useRef<number | null>(null)
+  const shuffleStep = useRef<number | null>(null)
 
   useEffect(() => {
     let elapsed = 0
