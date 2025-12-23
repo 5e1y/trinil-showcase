@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { toast, Toaster } from 'sonner'
 import * as TrinilIcons from 'trinil-react'
 import appPkg from '../../package.json'
@@ -381,7 +382,12 @@ export default function App() {
       <div className="flex flex-1 overflow-hidden">
         {/* Panneau gauche - 280px fixe, masqué sur mobile */}
         {!isMobile && (
-          <div className="w-70 shrink-0 border-r bg-card/50 overflow-hidden flex flex-col">
+          <motion.div 
+            className="w-70 shrink-0 border-r bg-card/50 overflow-hidden flex flex-col"
+            initial={{ x: -280, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
             <ScrollArea className="flex-1">
               <div className="p-6 space-y-8">
                 <div className="space-y-2">
@@ -448,11 +454,18 @@ export default function App() {
                 </div>
               </div>
             </ScrollArea>
-          </div>
+          </motion.div>
         )}
       
       {/* Panneau central - remplissage */}
-      <div className="flex-1 overflow-hidden">
+      <motion.div 
+        className={`flex-1 overflow-hidden transition-opacity duration-200 ${
+          selectedIcon && isMobile ? 'opacity-0' : 'opacity-100'
+        }`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: selectedIcon && isMobile ? 0 : 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
         <ScrollArea className="h-full" ref={scrollAreaRef}>
           <div className="p-6">
             {viewMode === 'grouped' ? (
@@ -516,14 +529,17 @@ export default function App() {
             )}
           </div>
         </ScrollArea>
-      </div>
+      </motion.div>
 
       {/* Panneau droite - 280px fixe desktop avec animation de largeur */}
       {!isMobile && (
-        <div 
-          className={`shrink-0 border-l bg-card/50 overflow-hidden flex flex-col transition-all duration-300 ease-out ${
-            selectedIcon ? 'w-70 opacity-100' : 'w-0 opacity-0 border-l-0'
+        <motion.div 
+          className={`shrink-0 border-l bg-card/50 overflow-hidden flex flex-col transition-[width,border] duration-300 ease-out ${
+            selectedIcon ? 'w-70' : 'w-0 border-l-0'
           }`}
+          initial={{ x: 280, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
         >
           {selectedIcon && (
             <ScrollArea className="h-full">
@@ -619,7 +635,7 @@ export default function App() {
               </div>
             </ScrollArea>
           )}
-        </div>
+        </motion.div>
       )}
       </div>
 
