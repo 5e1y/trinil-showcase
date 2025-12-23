@@ -13,6 +13,92 @@ import { useIsMobile } from '@/components/ui/use-mobile'
 import { cn } from '@/lib/utils'
 import Header from './components/Header'
 
+// Icônes flottantes pour l'effet parallax - Desktop (grandes, plus nombreuses)
+const floatingIconsDesktop = [
+  // Côté gauche
+  { Icon: TrinilIcons.Heart, x: '5%', y: '12%', size: 40, depth: 0.3, rotate: -12 },
+  { Icon: TrinilIcons.Coffee, x: '3%', y: '35%', size: 32, depth: 0.6, rotate: -15 },
+  { Icon: TrinilIcons.Sparkle, x: '8%', y: '58%', size: 28, depth: 0.4, rotate: -8 },
+  { Icon: TrinilIcons.Alarm, x: '2%', y: '78%', size: 26, depth: 0.65, rotate: -10 },
+  { Icon: TrinilIcons.Camera, x: '12%', y: '88%', size: 30, depth: 0.55, rotate: -5 },
+  { Icon: TrinilIcons.ColorPalette, x: '15%', y: '25%', size: 26, depth: 0.5, rotate: 8 },
+  { Icon: TrinilIcons.Headphones, x: '10%', y: '45%', size: 24, depth: 0.7, rotate: -18 },
+  { Icon: TrinilIcons.Gift, x: '6%', y: '68%', size: 28, depth: 0.45, rotate: 12 },
+  
+  // Côté droit
+  { Icon: TrinilIcons.Star, x: '88%', y: '10%', size: 36, depth: 0.5, rotate: 15 },
+  { Icon: TrinilIcons.Briefcase, x: '92%', y: '32%', size: 32, depth: 0.45, rotate: 10 },
+  { Icon: TrinilIcons.Moon, x: '95%', y: '52%', size: 34, depth: 0.35, rotate: 20 },
+  { Icon: TrinilIcons.AirplaneMode, x: '90%', y: '72%', size: 28, depth: 0.55, rotate: 25 },
+  { Icon: TrinilIcons.Music, x: '85%', y: '85%', size: 30, depth: 0.4, rotate: 18 },
+  { Icon: TrinilIcons.Globe, x: '93%', y: '18%', size: 24, depth: 0.6, rotate: -8 },
+  { Icon: TrinilIcons.Bookmark, x: '87%', y: '42%', size: 26, depth: 0.5, rotate: -12 },
+  { Icon: TrinilIcons.Bell, x: '96%', y: '62%', size: 24, depth: 0.7, rotate: 5 },
+  
+  // Haut centre (éloignés du titre)
+  { Icon: TrinilIcons.Sun, x: '25%', y: '8%', size: 26, depth: 0.7, rotate: -20 },
+  { Icon: TrinilIcons.Compass, x: '75%', y: '6%', size: 28, depth: 0.5, rotate: 12 },
+  { Icon: TrinilIcons.Pencil, x: '35%', y: '5%', size: 22, depth: 0.8, rotate: 15 },
+  { Icon: TrinilIcons.Diamond, x: '65%', y: '8%', size: 24, depth: 0.6, rotate: -10 },
+  
+  // Bas centre
+  { Icon: TrinilIcons.Car, x: '30%', y: '92%', size: 28, depth: 0.55, rotate: -25 },
+  { Icon: TrinilIcons.Trophy, x: '70%', y: '90%', size: 26, depth: 0.5, rotate: 20 },
+  { Icon: TrinilIcons.Flag, x: '45%', y: '95%', size: 24, depth: 0.65, rotate: -5 },
+  { Icon: TrinilIcons.Crown, x: '55%', y: '93%', size: 26, depth: 0.45, rotate: 10 },
+]
+
+// Icônes flottantes pour mobile (moins nombreuses, taille moyenne, positionnées sur les bords)
+const floatingIconsMobile = [
+  { Icon: TrinilIcons.Heart, x: '5%', y: '15%', size: 28, depth: 0.2, rotate: -10 },
+  { Icon: TrinilIcons.Star, x: '90%', y: '12%', size: 26, depth: 0.25, rotate: 12 },
+  { Icon: TrinilIcons.Sparkle, x: '8%', y: '75%', size: 24, depth: 0.3, rotate: -8 },
+  { Icon: TrinilIcons.Moon, x: '88%', y: '70%', size: 26, depth: 0.2, rotate: 15 },
+  { Icon: TrinilIcons.Coffee, x: '3%', y: '45%', size: 24, depth: 0.35, rotate: -12 },
+  { Icon: TrinilIcons.Music, x: '92%', y: '42%', size: 24, depth: 0.3, rotate: 18 },
+]
+
+interface FloatingIconProps {
+  Icon: React.ComponentType<{ size?: number; className?: string }>
+  x: string
+  y: string
+  size: number
+  depth: number
+  rotate: number
+  index: number
+}
+
+function FloatingIcon({ Icon, x, y, size, rotate, index }: FloatingIconProps) {
+  return (
+    <motion.div
+      className="absolute text-muted-foreground/20 pointer-events-none"
+      style={{
+        left: x,
+        top: y,
+        rotate,
+      }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ 
+        opacity: 1, 
+        scale: 1,
+        y: [0, -8, 0], // Floating animation
+      }}
+      transition={{ 
+        opacity: { duration: 0.6, delay: index * 0.05 },
+        scale: { duration: 0.6, delay: index * 0.05, type: "spring", stiffness: 200 },
+        y: { 
+          duration: 3 + Math.random() * 2, 
+          repeat: Infinity, 
+          ease: "easeInOut",
+          delay: index * 0.2 
+        }
+      }}
+    >
+      <Icon size={size} />
+    </motion.div>
+  )
+}
+
 interface LandingProps {
   onNavigateToIcons: () => void
   onNavigateToDesignSystem: () => void
@@ -21,6 +107,7 @@ interface LandingProps {
 export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }: LandingProps) {
   const [framework, setFramework] = useState('react')
   const [iconSize] = useState(24)
+  
   // Bundles d'icônes pour raconter une mini-histoire
   const iconBundles = [
     [
@@ -69,6 +156,9 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
   })
   const isMobile = useIsMobile()
   
+  // Sélection des icônes selon le device
+  const floatingIcons = isMobile ? floatingIconsMobile : floatingIconsDesktop
+  
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground">
@@ -80,22 +170,57 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
         />
 
         {/* Hero Section */}
-        <section className="pt-32 pb-24 px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
-              <TrinilIcons.Sparkle size={16} />
-              <span>765+ handcrafted icons</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
+        <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+          {/* Floating icons */}
+          {floatingIcons.map((icon, index) => (
+            <FloatingIcon
+              key={index}
+              {...icon}
+              index={index}
+            />
+          ))}
+          
+          <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+            <motion.h1 
+              className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               Simple, professional Open-source icons for your interfaces
-            </h1>
+            </motion.h1>
             
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Trinil is a collection of 1.5px stroke icons for modern interfaces.
-            </p>
+            {/* KPI Badges */}
+            <motion.div 
+              className="flex flex-wrap gap-2 justify-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
+                <TrinilIcons.Sparkle size={16} />
+                <span>765+ handcrafted icons</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
+                <TrinilIcons.Feather size={16} />
+                <span>&lt;1KB per icon</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
+                <TrinilIcons.Heart size={16} />
+                <span>Open Source</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
+                <TrinilIcons.GitBranch size={16} />
+                <span>Tree Shakable</span>
+              </div>
+            </motion.div>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <Button variant="default" onClick={onNavigateToIcons}>
                 <TrinilIcons.Plugins size={20} />
                 Browse icons
@@ -108,33 +233,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
                   Star on GitHub
                 </a>
               </Button>
-            </div>
-          </div>
-        </section>
-
-
-
-        {/* Key Values Section */}
-        <section className="py-8 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-wrap gap-8 text-center text-sm">
-              <div className="flex-1 min-w-[200px]">
-                <p className="text-2xl font-semibold text-primary mb-1">765+</p>
-                <p className="text-muted-foreground">Handcrafted icons</p>
-              </div>
-              <div className="flex-1 min-w-[200px]">
-                <p className="text-2xl font-semibold text-primary mb-1">&lt;1KB</p>
-                <p className="text-muted-foreground">Per icon gzipped</p>
-              </div>
-              <div className="flex-1 min-w-[200px]">
-                <p className="text-2xl font-semibold text-primary mb-1">Open Source</p>
-                <p className="text-muted-foreground">MIT License</p>
-              </div>
-              <div className="flex-1 min-w-[200px]">
-                <p className="text-2xl font-semibold text-primary mb-1">Tree Shakable</p>
-                <p className="text-muted-foreground">Reduces bundle size</p>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -292,20 +391,62 @@ export default {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-6">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold">Trinil Icons</span>
-              <span className="text-muted-foreground">— Open Source Icon Library</span>
+        <footer className="border-t border-border">
+          {/* Mini Profile */}
+          <div className="py-12 px-6">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center gap-4 justify-center">
+              <img 
+                src="https://github.com/5e1y.png" 
+                alt="Rémi Courtillon"
+                className="w-12 h-12 rounded-full"
+              />
+              <div className="flex flex-col items-center sm:items-start gap-1">
+                <span className="font-medium text-foreground">Rémi Courtillon</span>
+                <div className="flex items-center gap-3">
+                  <a
+                    href="https://github.com/5e1y"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.544 2.914 1.181.092-.916.35-1.544.636-1.9-2.22-.253-4.555-1.113-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.286.098-2.676 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.39.203 2.423.1 2.676.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.194 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                    </svg>
+                    @5e1y
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/remi-courtillon/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn
+                  </a>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-6">
+          </div>
+          
+          {/* Full-width separator */}
+          <div className="border-t border-border" />
+          
+          {/* Bottom bar */}
+          <div className="py-6 px-6">
+            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">Trinil Icons</span>
+                <span className="text-muted-foreground">— Open Source Icon Library</span>
+              </div>
               <a
                 href="https://github.com/5e1y/trinil"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                GitHub
+                GitHub Repository
               </a>
             </div>
           </div>
@@ -384,11 +525,11 @@ function BookingCard() {
               <Button
                 variant="outline"
                 className={cn(
-                  "h-9 w-full px-3 py-2 font-normal text-sm flex items-center",
+                  "h-9 w-full px-3 py-2 font-normal text-sm flex items-center gap-2",
                   !checkIn && "text-muted-foreground"
                 )}
               >
-                  <TrinilIcons.Calandar size={18} className="mr-2 shrink-0" />
+                  <TrinilIcons.Calandar size={18} className="shrink-0" />
                 <span className="flex-1 text-left truncate">
                   {checkIn ? format(checkIn, "MMM d") : "Select"}
                 </span>
@@ -411,11 +552,11 @@ function BookingCard() {
               <Button
                 variant="outline"
                 className={cn(
-                  "h-9 w-full px-3 py-2 font-normal text-sm flex items-center",
+                  "h-9 w-full px-3 py-2 font-normal text-sm flex items-center gap-2",
                   !checkOut && "text-muted-foreground"
                 )}
               >
-                  <TrinilIcons.Calandar size={18} className="mr-2 shrink-0" />
+                  <TrinilIcons.Calandar size={18} className="shrink-0" />
                 <span className="flex-1 text-left truncate">
                   {checkOut ? format(checkOut, "MMM d") : "Select"}
                 </span>
@@ -453,15 +594,9 @@ function BookingCard() {
 
       {/* Price & CTA */}
       <div className="space-y-3">
-        <div className="flex items-baseline justify-between">
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold">$89</span>
-            <span className="text-sm text-muted-foreground">/night</span>
-          </div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <TrinilIcons.Star size={12} className="fill-current text-yellow-500" />
-            4.9 (128)
-          </p>
+        <div className="flex items-baseline gap-1">
+          <span className="text-2xl font-bold">$89</span>
+          <span className="text-sm text-muted-foreground">/night</span>
         </div>
         <Button className="w-full gap-2">
           Book now
