@@ -238,10 +238,10 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
         </section>
 
         {/* Customize Section */}
-        <section className="py-8 px-6">
+        <section className="border-t border-border px-6">
           <div className="max-w-6xl mx-auto">
             <div className={cn(
-              "bg-background border border-border rounded-3xl overflow-hidden",
+              "bg-background border-l border-r border-border overflow-hidden",
               isMobile ? "flex flex-col" : "flex h-[28rem]"
             )}>
               
@@ -290,10 +290,10 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
         </section>
 
         {/* Demo Section - Icons in Context */}
-        <section className="py-8 px-6 bg-background">
+        <section className="border-t border-border px-6 bg-background">
           <div className="max-w-6xl mx-auto">
             <div className={cn(
-              "bg-background border border-border rounded-3xl overflow-hidden",
+              "bg-background border-l border-r border-border overflow-hidden",
               isMobile ? "flex flex-col" : "flex h-[28rem]"
             )}>
               
@@ -322,10 +322,10 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
         </section>
 
         {/* Installation Section */}
-        <section className="py-8 px-6">
+        <section className="border-t border-border px-6">
           <div className="max-w-6xl mx-auto">
             <div className={cn(
-              "bg-background border border-border rounded-3xl overflow-hidden",
+              "bg-background border-l border-r border-border overflow-hidden",
               isMobile ? "flex flex-col" : "flex h-[28rem]"
             )}>
               
@@ -335,7 +335,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
                 isMobile ? "py-8" : "w-1/3 border-r"
               )}>
                 <p className={cn(
-                  "font-medium text-foreground leading-relaxed mb-6",
+                  "font-medium text-foreground leading-relaxed",
                   isMobile ? "text-lg" : "text-2xl"
                 )}>
                   Install and use in seconds. Multiple packages available — React, Vue, (more soon) — pick what fits your stack.
@@ -393,8 +393,8 @@ export default {
         {/* Footer */}
         <footer className="border-t border-border">
           {/* Mini Profile */}
-          <div className="py-12 px-6">
-            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center gap-4 justify-center">
+          <div className="px-6">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center gap-4 justify-center border-l border-r border-border px-6 py-12">
               <img 
                 src="https://github.com/5e1y.png" 
                 alt="Rémi Courtillon"
@@ -434,8 +434,8 @@ export default {
           <div className="border-t border-border" />
           
           {/* Bottom bar */}
-          <div className="py-6 px-6">
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="px-6">
+            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 border-l border-r border-border px-6 py-6">
               <div className="flex items-center gap-2">
                 <span className="font-semibold">Trinil Icons</span>
                 <span className="text-muted-foreground">— Open Source Icon Library</span>
