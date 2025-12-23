@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { useSlotShuffleAnimationStable } from './useSlotShuffleAnimationStable'
 import { format } from 'date-fns'
 import * as TrinilIcons from 'trinil-react'
 import { Button } from '@/components/ui/button'
@@ -18,7 +20,53 @@ interface LandingProps {
 
 export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }: LandingProps) {
   const [framework, setFramework] = useState('react')
-  const [iconSize, setIconSize] = useState(24)
+  const [iconSize] = useState(24)
+  // Bundles d'icônes pour raconter une mini-histoire
+  const iconBundles = [
+    [
+      { name: 'Car', Icon: TrinilIcons.Car },
+      { name: 'PhoneUp', Icon: TrinilIcons.PhoneUp },
+      { name: 'Skull', Icon: TrinilIcons.Skull },
+    ],
+    [
+      { name: 'Eye', Icon: TrinilIcons.EyeOpen },
+      { name: 'Sparkle', Icon: TrinilIcons.Sparkle },
+      { name: 'Heart', Icon: TrinilIcons.Heart },
+    ],
+    [
+      { name: 'Tooth', Icon: TrinilIcons.Tooth },
+      { name: 'Moon', Icon: TrinilIcons.Moon },
+      { name: 'Cash', Icon: TrinilIcons.Cash },
+    ],
+    [
+      { name: 'Alarm', Icon: TrinilIcons.Alarm },
+      { name: 'Coffee', Icon: TrinilIcons.Coffee },
+      { name: 'Briefcase', Icon: TrinilIcons.Briefcase },
+    ],
+  ]
+  const [bundleIndex, setBundleIndex] = useState(0)
+  const [displayedIndex, setDisplayedIndex] = useState(0)
+  // Pour l'effet machine à sous : un état d'animation par slot (icône)
+  const [slotStates, setSlotStates] = useState([0,0,0])
+  const handleShuffle = () => setBundleIndex((i) => (i + 1) % iconBundles.length)
+
+  // Auto-shuffle toutes les 3.33 secondes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBundleIndex((i) => (i + 1) % iconBundles.length)
+    }, 3330)
+    return () => clearInterval(interval)
+  }, [iconBundles.length])
+
+  // Effet shuffle animé
+  useSlotShuffleAnimationStable({
+    trigger: bundleIndex,
+    onShuffleEnd: setDisplayedIndex,
+    iconBundles,
+    shuffleDuration: 700,
+    shuffleInterval: 60,
+    setSlotStates,
+  })
   const isMobile = useIsMobile()
   
   return (
@@ -40,8 +88,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
             </div>
             
             <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
-              Simple, professional
-              <span className="text-primary"> open-source icons</span>
+              Simple, professional Open-source icons for your interfaces
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -108,7 +155,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
                   "font-medium text-foreground leading-relaxed",
                   isMobile ? "text-lg" : "text-2xl"
                 )}>
-                  Customize the size, the color, and aria-labels at will. The style, however, is locked to ensure consistency.
+                  Ensure clear and consistent storytelling across your product with a reliable set of simple, readable icons.
                 </p>
               </div>
 
@@ -117,37 +164,25 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
                 "flex flex-col items-center px-10 border-border",
                 isMobile ? "py-8 border-t" : "w-2/3 py-8"
               )}>
-                <div className="w-full max-w-[420px] flex flex-col h-full border border-border rounded-lg overflow-hidden">
-                  {/* Icon Size Slider - Sticky at top */}
-                  <div className="sticky top-0 z-20 bg-background space-y-2 px-6 pt-5 pb-5 border-b border-border">
-                    <label className="text-sm font-medium">Icon size: {iconSize}px</label>
-                    <Slider
-                      value={[iconSize]}
-                      onValueChange={(value) => setIconSize(value[0])}
-                      min={12}
-                      max={64}
-                      step={4}
-                      className="w-full"
-                    />
-                  </div>
-
-                  {/* Icons Grid - Scrollable area */}
-                  <div className="overflow-y-auto flex-1 px-6 py-5 max-h-[420px]">
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-3">
-                      {Object.entries(TrinilIcons).map(([name, Icon]) => (
-                        <Tooltip key={name}>
-                          <TooltipTrigger asChild>
-                            <button
-                              aria-label={name}
-                              className="aspect-square rounded-lg border transition-colors border-border bg-card hover:bg-accent hover:border-accent-foreground/20 p-2 flex items-center justify-center"
-                            >
-                              <Icon size={iconSize} aria-hidden="true" className="text-foreground" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="text-xs">{name}</TooltipContent>
-                        </Tooltip>
-                      ))}
-                    </div>
+                {/* 3 centered icons et bouton shuffle sans le carré border */}
+                <div className="flex-1 flex flex-col items-center justify-center w-full">
+                  <div className="flex gap-4 items-center justify-center w-full mb-4">
+                    {iconBundles[displayedIndex].map(({name, Icon}, idx) => (
+                      <motion.div
+                        key={name + '-' + displayedIndex}
+                        className="aspect-square w-24 h-24 rounded-xl border border-border bg-card flex items-center justify-center transition-colors overflow-hidden"
+                        initial={{ scale: 0.85 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Icon size={iconSize} className="text-foreground" aria-label={name} />
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -172,18 +207,16 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
                   "font-medium text-foreground leading-relaxed",
                   isMobile ? "text-lg" : "text-2xl"
                 )}>
-                  Made with professional use in mind. Every icon follows strict design principles for consistency across your products.
+                  Made with professionals in mind: Trinil contains every icon needed for commercial use across numerous industries.
                 </p>
               </div>
 
               {/* Right - Image with UI */}
               <div className={cn(
-                "flex flex-col items-center px-10 border-border",
+                "flex flex-1 items-center justify-center px-10 border-border h-full",
                 isMobile ? "py-8 border-t" : "w-2/3 py-8"
               )}>
-                <div className="w-full max-w-[420px] flex items-center justify-center border border-border rounded-lg overflow-hidden h-full">
-                  <BookingCard />
-                </div>
+                <BookingCard />
               </div>
             </div>
           </div>
@@ -274,18 +307,6 @@ export default {
               >
                 GitHub
               </a>
-              <button
-                onClick={onNavigateToDesignSystem}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Design System
-              </button>
-              <button
-                onClick={onNavigateToIcons}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Icons
-              </button>
             </div>
           </div>
         </footer>
@@ -345,7 +366,7 @@ function BookingCard() {
   const [guests, setGuests] = useState('2')
   
   return (
-    <div className="bg-white rounded-lg p-6 w-full h-full space-y-4 flex flex-col justify-center">
+    <div className="bg-white rounded-lg p-6 w-full max-w-[440px] border border-border space-y-4 flex flex-col justify-center" style={{ maxHeight: 'min(420px, 100vw)' }}>
       <div className="space-y-1">
         <h3 className="font-semibold text-lg">Ngawi, Indonesia</h3>
         <p className="text-sm text-muted-foreground flex items-center">
@@ -431,7 +452,7 @@ function BookingCard() {
       </div>
 
       {/* Price & CTA */}
-      <div className="pt-3 border-t space-y-3">
+      <div className="space-y-3">
         <div className="flex items-baseline justify-between">
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-bold">$89</span>
