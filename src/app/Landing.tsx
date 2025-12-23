@@ -170,7 +170,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
         />
 
         {/* Hero Section */}
-        <section className="relative pt-48 pb-40 px-6 overflow-hidden">
+        <section className="relative pt-24 pb-16 md:pt-48 md:pb-40 px-6 overflow-hidden">
           {/* Floating icons */}
           {floatingIcons.map((icon, index) => (
             <FloatingIcon
@@ -216,7 +216,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
             </motion.div>
             
             <motion.div 
-              className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
+              className="flex flex-row flex-wrap gap-4 justify-center pt-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
