@@ -120,7 +120,7 @@ export default function App() {
       headings.forEach((el) => {
         const rect = el.getBoundingClientRect();
         const top = rect.top - viewportRect.top;
-        if (top >= -50 && top < minDist) {
+        if (top >= -240 && top < minDist) {
           minDist = top;
           closestEl = el;
         }
