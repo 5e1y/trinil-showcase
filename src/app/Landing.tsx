@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { useSlotShuffleAnimationStable } from './useSlotShuffleAnimationStable'
 import { format } from 'date-fns'
 import * as TrinilIcons from 'trinil-react'
@@ -199,19 +200,19 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
                 <TrinilIcons.Sparkle size={16} />
-                <span>765+ handcrafted icons</span>
+                <span>1050+ handcrafted icons</span>
               </div>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
                 <TrinilIcons.Feather size={16} />
-                <span>&lt;1KB per icon</span>
+                <span>1KB per icon</span>
               </div>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
                 <TrinilIcons.Heart size={16} />
-                <span>Open Source</span>
+                <span>Open-source (MIT)</span>
               </div>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-sm text-muted-foreground">
                 <TrinilIcons.GitBranch size={16} />
-                <span>Tree Shakable</span>
+                <span>Tree shakable</span>
               </div>
             </motion.div>
             
@@ -294,7 +295,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
           <div className="max-w-6xl mx-auto">
             <div className={cn(
               "bg-background border-l border-r border-border overflow-hidden",
-              isMobile ? "flex flex-col" : "flex h-[28rem]"
+              isMobile ? "flex flex-col" : "flex"
             )}>
               
               {/* Left - Title */}
@@ -338,7 +339,7 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
                   "font-medium text-foreground leading-relaxed",
                   isMobile ? "text-lg" : "text-2xl"
                 )}>
-                  Install and use in seconds. Multiple packages available — React, Vue, (more soon) — pick what fits your stack.
+                  Install and use in seconds. Multiple packages available — React, Vue, Svelte, Solid & Web Components — pick what fits your stack.
                 </p>
               </div>
 
@@ -356,12 +357,22 @@ export default function Landing({ onNavigateToIcons, onNavigateToDesignSystem }:
                     <SelectContent>
                       <SelectItem value="react">React</SelectItem>
                       <SelectItem value="vue">Vue</SelectItem>
+                      <SelectItem value="svelte">Svelte</SelectItem>
+                      <SelectItem value="solid">Solid</SelectItem>
+                      <SelectItem value="wc">Web Components</SelectItem>
                     </SelectContent>
                   </Select>
 
-                  <CodeBlock code={framework === 'react' ? 'npm install trinil-react' : 'npm install trinil-vue'} />
+                  <CodeBlock code={{
+                    react: 'npm install trinil-react',
+                    vue: 'npm install trinil-vue',
+                    svelte: 'npm install trinil-svelte',
+                    solid: 'npm install trinil-solid',
+                    wc: 'npm install trinil-wc'
+                  }[framework] || 'npm install trinil-react'} />
                   <CodeBlock 
-                    code={framework === 'react' ? `import { Heart, Star, Check } from 'trinil-react'
+                    code={{
+                      react: `import { Heart, Star, Check } from 'trinil-react'
 
 function App() {
   return (
@@ -371,7 +382,8 @@ function App() {
       <Check size={24} />
     </div>
   )
-}` : `import { Heart, Star, Check } from 'trinil-vue'
+}`,
+                      vue: `import { Heart, Star, Check } from 'trinil-vue'
 
 export default {
   components: { Heart, Star, Check },
@@ -382,7 +394,35 @@ export default {
       <Check :size="24" />
     </div>
   \`
-}`}
+}`,
+                      svelte: `<script>
+  import { Heart, Star, Check } from 'trinil-svelte'
+</script>
+
+<div class="flex gap-4">
+  <Heart size={24} />
+  <Star size={24} />
+  <Check size={24} />
+</div>`,
+                      solid: `import { Heart, Star, Check } from 'trinil-solid'
+
+function App() {
+  return (
+    <div class="flex gap-4">
+      <Heart size={24} />
+      <Star size={24} />
+      <Check size={24} />
+    </div>
+  )
+}`,
+                      wc: `import 'trinil-wc'
+
+<div class="flex gap-4">
+  <trinil-heart size="24"></trinil-heart>
+  <trinil-star size="24"></trinil-star>
+  <trinil-check size="24"></trinil-check>
+</div>`
+                    }[framework] || ''}
                   />
                 </div>
               </div>
@@ -435,11 +475,10 @@ export default {
           
           {/* Bottom bar */}
           <div className="px-6">
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 border-l border-r border-border px-6 py-6">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">Trinil Icons</span>
-                <span className="text-muted-foreground">— Open Source Icon Library</span>
-              </div>
+            <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-x-2 gap-y-1 border-l border-r border-border px-6 py-6 text-center">
+              <span className="font-semibold">Trinil Icons</span>
+              <span className="text-muted-foreground">— Open Source Icon Library</span>
+              <span className="text-muted-foreground">•</span>
               <a
                 href="https://github.com/5e1y/trinil"
                 target="_blank"
@@ -478,6 +517,9 @@ function CodeBlock({ code }: { code: string }) {
   const handleCopy = () => {
     navigator.clipboard.writeText(code)
     setCopied(true)
+    toast.success('Copied to clipboard!', {
+      duration: 2000,
+    })
     setTimeout(() => setCopied(false), 2000)
   }
   
@@ -507,13 +549,48 @@ function BookingCard() {
   const [guests, setGuests] = useState('2')
   
   return (
-    <div className="bg-white rounded-lg p-6 w-full max-w-[440px] border border-border space-y-4 flex flex-col justify-center" style={{ maxHeight: 'min(420px, 100vw)' }}>
+    <div className="bg-white rounded-lg p-6 w-full max-w-[440px] border border-border space-y-4 flex flex-col justify-center">
       <div className="space-y-1">
         <h3 className="font-semibold text-lg">Ngawi, Indonesia</h3>
         <p className="text-sm text-muted-foreground flex items-center">
           <TrinilIcons.Location size={18} className="mr-2 shrink-0" />
           East Java
         </p>
+      </div>
+      
+      {/* Equipment */}
+      <div>
+        <label className="text-xs font-medium text-muted-foreground block mb-2">Equipment</label>
+        <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-2">
+            <TrinilIcons.WashingMachine size={24} className="text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Washer</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <TrinilIcons.Oven size={24} className="text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Oven</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <TrinilIcons.Fridge size={24} className="text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Fridge</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <TrinilIcons.Iron size={24} className="text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Iron</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <TrinilIcons.Kettle size={24} className="text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Kettle</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <TrinilIcons.Shower size={24} className="text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Shower</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <TrinilIcons.Toilet size={24} className="text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Toilet</span>
+          </div>
+        </div>
       </div>
       
       {/* Check-in & Check-out */}
@@ -529,7 +606,7 @@ function BookingCard() {
                   !checkIn && "text-muted-foreground"
                 )}
               >
-                  <TrinilIcons.Calandar size={18} className="shrink-0" />
+                  <TrinilIcons.Calendar size={18} className="shrink-0" />
                 <span className="flex-1 text-left truncate">
                   {checkIn ? format(checkIn, "MMM d") : "Select"}
                 </span>
@@ -556,7 +633,7 @@ function BookingCard() {
                   !checkOut && "text-muted-foreground"
                 )}
               >
-                  <TrinilIcons.Calandar size={18} className="shrink-0" />
+                  <TrinilIcons.Calendar size={18} className="shrink-0" />
                 <span className="flex-1 text-left truncate">
                   {checkOut ? format(checkOut, "MMM d") : "Select"}
                 </span>

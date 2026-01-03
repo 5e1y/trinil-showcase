@@ -15,7 +15,15 @@ import { useAppBreakpoint } from './useAppBreakpoint'
 import Landing from './Landing'
 import Header from './components/Header'
 
-type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>
+interface IconProps {
+  size?: number
+  strokeWidth?: number
+  className?: string
+  'aria-label'?: string
+  'aria-hidden'?: boolean
+}
+
+type IconComponent = React.ComponentType<IconProps>
 
 function isIconComponent(value: unknown): value is IconComponent {
   return (
@@ -34,9 +42,10 @@ export default function App() {
   
   const [query, setQuery] = useState('')
   const [iconSize, setIconSize] = useState([24])
+  const [strokeWidth, setStrokeWidth] = useState([1.5])
   const [viewMode, setViewMode] = useState<'all' | 'grouped'>('grouped')
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
-  const [framework, setFramework] = useState<'react' | 'vue'>('react')
+  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'solid' | 'wc'>('react')
   const [activeTheme, setActiveTheme] = useState<typeof THEMES[number]>(THEMES[0])
   const [copiedNpm, setCopiedNpm] = useState(false)
   const [copiedUsage, setCopiedUsage] = useState(false)
@@ -120,7 +129,7 @@ export default function App() {
       headings.forEach((el) => {
         const rect = el.getBoundingClientRect();
         const top = rect.top - viewportRect.top;
-        if (top >= -240 && top < minDist) {
+        if (top >= -50 && top < minDist) {
           minDist = top;
           closestEl = el;
         }
@@ -204,8 +213,14 @@ export default function App() {
   // ...existing code...
 
   const handleCopyNpm = () => {
-    const pkg = framework === 'react' ? 'trinil-react' : 'trinil-vue'
-    const command = `npm install ${pkg}`
+    const packages: Record<typeof framework, string> = {
+      react: 'trinil-react',
+      vue: 'trinil-vue',
+      svelte: 'trinil-svelte',
+      solid: 'trinil-solid',
+      wc: 'trinil-wc'
+    }
+    const command = `npm install ${packages[framework]}`
     
     try {
       // Créer un textarea temporaire
@@ -243,9 +258,14 @@ export default function App() {
 
   const handleCopyUsage = () => {
     if (!selectedIcon) return
-    const usageCode = framework === 'react' 
-      ? `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`
-      : `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`
+    const usageCodes: Record<typeof framework, string> = {
+      react: `import { ${selectedIcon} } from 'trinil-react'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      strokeWidth={1.5}\n      className="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`,
+      vue: `import { ${selectedIcon} } from 'trinil-vue'\n\n<template>\n  <${selectedIcon}\n    :size="24"\n    :stroke-width="1.5"\n    class="text-blue-500"\n    aria-label="${selectedIcon}"\n  />\n</template>`,
+      svelte: `<script>\n  import { ${selectedIcon} } from 'trinil-svelte'\n</script>\n\n<${selectedIcon}\n  size={24}\n  strokeWidth={1.5}\n  class="text-blue-500"\n  aria-label="${selectedIcon}"\n/>`,
+      solid: `import { ${selectedIcon} } from 'trinil-solid'\n\nfunction App() {\n  return (\n    <${selectedIcon}\n      size={24}\n      strokeWidth={1.5}\n      class="text-blue-500"\n      aria-label="${selectedIcon}"\n    />\n  )\n}`,
+      wc: `import 'trinil-wc'\n\n<trinil-${selectedIcon.toLowerCase()}\n  size="24"\n  stroke-width="1.5"\n  class="text-blue-500"\n  aria-label="${selectedIcon}"\n></trinil-${selectedIcon.toLowerCase()}>`
+    }
+    const usageCode = usageCodes[framework]
 
     const textArea = document.createElement('textarea')
     textArea.value = usageCode
@@ -296,23 +316,33 @@ export default function App() {
     }
   }
 
-  const npmCommand = framework === 'react' ? 'npm install trinil-react' : 'npm install trinil-vue'
+  const npmCommands: Record<typeof framework, string> = {
+    react: 'npm install trinil-react',
+    vue: 'npm install trinil-vue',
+    svelte: 'npm install trinil-svelte',
+    solid: 'npm install trinil-solid',
+    wc: 'npm install trinil-wc'
+  }
+  const npmCommand = npmCommands[framework]
 
   // Conditional render for Landing page
   if (page === 'landing') {
     return (
-      <Landing 
-        onNavigateToIcons={() => setPage('home')} 
-        onNavigateToDesignSystem={() => setPage('landing')}
-      />
+      <TooltipProvider delayDuration={0}>
+        <Toaster position="top-center" />
+        <Landing 
+          onNavigateToIcons={() => setPage('home')} 
+          onNavigateToDesignSystem={() => setPage('landing')}
+        />
+      </TooltipProvider>
     )
   }
 
   // ...existing code...
 
   return (
-    <TooltipProvider>
-      <Toaster position="bottom-right" />
+    <TooltipProvider delayDuration={0}>
+      <Toaster position="top-center" />
       <div className="flex flex-col h-screen bg-background text-foreground">
       {/* Header commun desktop et mobile */}
       <Header 
@@ -338,7 +368,7 @@ export default function App() {
                 const newSize = iconSize[0] === 60 ? 24 : iconSize[0] + 12
                 setIconSize([newSize])
               }}
-              className="flex items-center justify-center w-10 h-10 rounded-md border border-border hover:bg-accent transition-colors font-medium text-sm"
+              className="flex items-center justify-center w-10 h-10 rounded-md border border-input bg-background hover:border-ring hover:bg-muted/50 transition-colors font-medium text-sm"
             >
               {iconSize[0]}
             </button>
@@ -400,13 +430,28 @@ export default function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <label className="text-sm font-medium">Icon size: {iconSize[0]}px</label>
+                  <label className="text-sm font-medium">
+                    Icon Size <span className="text-muted-foreground">({iconSize[0]}px)</span>
+                  </label>
                   <Slider
                     value={iconSize}
                     onValueChange={setIconSize}
                     min={12}
                     max={64}
                     step={4}
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <label className="text-sm font-medium">
+                    Stroke Width <span className="text-muted-foreground">({strokeWidth[0]}px)</span>
+                  </label>
+                  <Slider
+                    value={strokeWidth}
+                    onValueChange={setStrokeWidth}
+                    min={1}
+                    max={2}
+                    step={0.1}
                   />
                 </div>
 
@@ -488,13 +533,13 @@ export default function App() {
                               <button
                                 aria-label={name}
                                 onClick={() => setSelectedIcon(name)}
-                                className={`aspect-square rounded-xl border transition-colors ${
+                                className={`aspect-square rounded-xl border ring-offset-background transition-colors ${
                                   selectedIcon === name
-                                    ? 'border-ring bg-accent text-accent-foreground'
-                                    : 'border-border bg-card hover:bg-accent hover:border-accent-foreground/20'
+                                    ? 'border-ring ring-2 ring-ring ring-offset-2 bg-muted/50'
+                                    : 'border-border bg-card hover:border-ring hover:bg-muted/50'
                                 } p-3 flex items-center justify-center`}
                               >
-                                {React.createElement(Icon as any, { size: iconSize[0], "aria-hidden": true, className: "text-foreground" })}
+                                {React.createElement(Icon as any, { size: iconSize[0], strokeWidth: strokeWidth[0], "aria-hidden": true, className: "text-foreground" })}
                               </button>
                             </TooltipTrigger>
                             <TooltipContent side="top">{name}</TooltipContent>
@@ -513,13 +558,13 @@ export default function App() {
                       <button
                         aria-label={name}
                         onClick={() => setSelectedIcon(name)}
-                        className={`aspect-square rounded-xl border transition-colors ${
+                        className={`aspect-square rounded-xl border ring-offset-background transition-colors ${
                           selectedIcon === name
-                            ? 'border-ring bg-accent text-accent-foreground'
-                            : 'border-border bg-card hover:bg-accent hover:border-accent-foreground/20'
+                            ? 'border-ring ring-2 ring-ring ring-offset-2 bg-muted/50'
+                            : 'border-border bg-card hover:border-ring hover:bg-muted/50'
                         } p-3 flex items-center justify-center`}
                       >
-                        <Icon size={iconSize[0]} aria-hidden="true" className="text-foreground" />
+                        <Icon size={iconSize[0]} strokeWidth={strokeWidth[0]} aria-hidden="true" className="text-foreground" />
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side="top">{name}</TooltipContent>
@@ -557,10 +602,10 @@ export default function App() {
                 <div className="flex flex-col items-center gap-3 mt-8">
                   <div className="flex items-center justify-center rounded-md border border-border bg-muted/50 overflow-hidden" style={{ width: '120px', height: '120px' }}>
                     <div className="relative" style={{ width: '120px', height: '120px' }}>
-                      <div className="absolute inset-0 grid-pattern-12" style={{ backgroundPosition: '0 0' }} />
+                      <div className="absolute inset-0 grid-pattern-16" style={{ backgroundPosition: '0 0' }} />
                       {(() => {
                         const Icon = TrinilIcons[selectedIcon as keyof typeof TrinilIcons] as IconComponent
-                        return Icon ? React.createElement(Icon as any, { size: 120, className: "text-foreground relative z-10" }) : null
+                        return Icon ? React.createElement(Icon as any, { size: 120, strokeWidth: strokeWidth[0], className: "text-foreground relative z-10" }) : null
                       })()}
                     </div>
                   </div>
@@ -570,7 +615,7 @@ export default function App() {
                 <div className="space-y-4">
                   <button
                     onClick={handleDownload}
-                    className="w-full px-3 py-2 h-10 rounded-md border border-border bg-background hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                    className="w-full px-3 py-2 h-10 rounded-md border border-input bg-background hover:border-ring hover:bg-muted/50 transition-colors text-sm font-medium flex items-center justify-center gap-2"
                   >
                     <TrinilIcons.Download size={18} />
                     Download SVG
@@ -578,13 +623,16 @@ export default function App() {
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground">Framework</label>
-                    <Select value={framework} onValueChange={(val) => setFramework(val as 'react' | 'vue')}>
+                    <Select value={framework} onValueChange={(val) => setFramework(val as typeof framework)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="react">React</SelectItem>
                         <SelectItem value="vue">Vue</SelectItem>
+                        <SelectItem value="svelte">Svelte</SelectItem>
+                        <SelectItem value="solid">Solid</SelectItem>
+                        <SelectItem value="wc">Web Components</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -597,7 +645,7 @@ export default function App() {
                       </pre>
                       <button
                         onClick={handleCopyNpm}
-                        className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
+                        className="absolute right-2 top-2 h-6 w-6 p-1 rounded border border-transparent bg-muted hover:border-ring hover:bg-muted/50 transition-colors flex items-center justify-center"
                       >
                         {copiedNpm ? (
                           <TrinilIcons.Check size={16} />
@@ -613,15 +661,65 @@ export default function App() {
                     <div className="relative">
                       <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
                         <code className="whitespace-pre-wrap break-words">
-                          {(framework === 'react' 
-                            ? 'import { ' + selectedIcon + ' } from \'trinil-react\'\n\nfunction App() {\n  return (\n    <' + selectedIcon + '\n      size={24}\n      className="text-blue-500"\n      aria-label="' + selectedIcon + '"\n    />\n  )\n}'
-                            : 'import { ' + selectedIcon + ' } from \'trinil-vue\'\n\n<template>\n  <' + selectedIcon + '\n    :size="24"\n    class="text-blue-500"\n    aria-label="' + selectedIcon + '"\n  />\n</template>'
-                          )}
+                          {{
+                            react: `import { ${selectedIcon} } from 'trinil-react'
+
+function App() {
+  return (
+    <${selectedIcon}
+      size={24}
+      strokeWidth={1.5}
+      className="text-blue-500"
+      aria-label="${selectedIcon}"
+    />
+  )
+}`,
+                            vue: `import { ${selectedIcon} } from 'trinil-vue'
+
+<template>
+  <${selectedIcon}
+    :size="24"
+    :stroke-width="1.5"
+    class="text-blue-500"
+    aria-label="${selectedIcon}"
+  />
+</template>`,
+                            svelte: `<script>
+  import { ${selectedIcon} } from 'trinil-svelte'
+</script>
+
+<${selectedIcon}
+  size={24}
+  strokeWidth={1.5}
+  class="text-blue-500"
+  aria-label="${selectedIcon}"
+/>`,
+                            solid: `import { ${selectedIcon} } from 'trinil-solid'
+
+function App() {
+  return (
+    <${selectedIcon}
+      size={24}
+      strokeWidth={1.5}
+      class="text-blue-500"
+      aria-label="${selectedIcon}"
+    />
+  )
+}`,
+                            wc: `import 'trinil-wc'
+
+<trinil-${selectedIcon?.toLowerCase()}
+  size="24"
+  stroke-width="1.5"
+  class="text-blue-500"
+  aria-label="${selectedIcon}"
+></trinil-${selectedIcon?.toLowerCase()}>`
+                          }[framework]}
                         </code>
                       </pre>
                       <button
                         onClick={handleCopyUsage}
-                        className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
+                        className="absolute right-2 top-2 h-6 w-6 p-1 rounded border border-transparent bg-muted hover:border-ring hover:bg-muted/50 transition-colors flex items-center justify-center"
                       >
                         {copiedUsage ? (
                           <TrinilIcons.Check size={16} />
@@ -656,10 +754,10 @@ export default function App() {
               <div className="flex flex-col items-center gap-3">
                 <div className="flex items-center justify-center rounded-md border border-border bg-muted/50 overflow-hidden" style={{ width: '160px', height: '160px' }}>
                   <div className="relative" style={{ width: '160px', height: '160px' }}>
-                    <div className="absolute inset-0 grid-pattern-12" style={{ backgroundPosition: '0 0' }} />
+                    <div className="absolute inset-0 grid-pattern-16" style={{ backgroundPosition: '0 0' }} />
                     {(() => {
                       const Icon = TrinilIcons[selectedIcon as keyof typeof TrinilIcons] as IconComponent
-                      return Icon ? React.createElement(Icon as any, { size: 160, className: "text-foreground relative z-10" }) : null
+                      return Icon ? React.createElement(Icon as any, { size: 160, strokeWidth: strokeWidth[0], className: "text-foreground relative z-10" }) : null
                     })()}
                   </div>
                 </div>
@@ -669,7 +767,7 @@ export default function App() {
               <div className="space-y-4">
                 <button
                   onClick={handleDownload}
-                  className="w-full px-3 py-3 h-12 rounded-md border border-border bg-background hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                  className="w-full px-3 py-3 h-12 rounded-md border border-input bg-background hover:border-ring hover:bg-muted/50 transition-colors text-sm font-medium flex items-center justify-center gap-2"
                 >
                   <TrinilIcons.Download size={18} />
                   Download SVG
@@ -677,13 +775,16 @@ export default function App() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">Framework</label>
-                  <Select value={framework} onValueChange={(val) => setFramework(val as 'react' | 'vue')}>
-                    <SelectTrigger className="h-12">
+                  <Select value={framework} onValueChange={(val) => setFramework(val as typeof framework)}>
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="react">React</SelectItem>
                       <SelectItem value="vue">Vue</SelectItem>
+                      <SelectItem value="svelte">Svelte</SelectItem>
+                      <SelectItem value="solid">Solid</SelectItem>
+                      <SelectItem value="wc">Web Components</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -696,7 +797,7 @@ export default function App() {
                     </pre>
                     <button
                       onClick={handleCopyNpm}
-                      className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
+                      className="absolute right-2 top-2 h-6 w-6 p-1 rounded border border-transparent bg-muted hover:border-ring hover:bg-muted/50 transition-colors flex items-center justify-center"
                     >
                       {copiedNpm ? (
                         <TrinilIcons.Check size={16} />
@@ -712,15 +813,65 @@ export default function App() {
                   <div className="relative">
                     <pre className="rounded-md bg-muted p-3 text-xs text-foreground font-mono overflow-x-auto max-w-full">
                       <code className="whitespace-pre-wrap break-words">
-                        {(framework === 'react' 
-                          ? 'import { ' + selectedIcon + ' } from \'trinil-react\'\n\nfunction App() {\n  return (\n    <' + selectedIcon + '\n      size={24}\n      className="text-blue-500"\n      aria-label="' + selectedIcon + '"\n    />\n  )\n}'
-                          : 'import { ' + selectedIcon + ' } from \'trinil-vue\'\n\n<template>\n  <' + selectedIcon + '\n    :size="24"\n    class="text-blue-500"\n    aria-label="' + selectedIcon + '"\n  />\n</template>'
-                        )}
+                        {{
+                          react: `import { ${selectedIcon} } from 'trinil-react'
+
+function App() {
+  return (
+    <${selectedIcon}
+      size={24}
+      strokeWidth={1.5}
+      className="text-blue-500"
+      aria-label="${selectedIcon}"
+    />
+  )
+}`,
+                          vue: `import { ${selectedIcon} } from 'trinil-vue'
+
+<template>
+  <${selectedIcon}
+    :size="24"
+    :stroke-width="1.5"
+    class="text-blue-500"
+    aria-label="${selectedIcon}"
+  />
+</template>`,
+                          svelte: `<script>
+  import { ${selectedIcon} } from 'trinil-svelte'
+</script>
+
+<${selectedIcon}
+  size={24}
+  strokeWidth={1.5}
+  class="text-blue-500"
+  aria-label="${selectedIcon}"
+/>`,
+                          solid: `import { ${selectedIcon} } from 'trinil-solid'
+
+function App() {
+  return (
+    <${selectedIcon}
+      size={24}
+      strokeWidth={1.5}
+      class="text-blue-500"
+      aria-label="${selectedIcon}"
+    />
+  )
+}`,
+                          wc: `import 'trinil-wc'
+
+<trinil-${selectedIcon?.toLowerCase()}
+  size="24"
+  stroke-width="1.5"
+  class="text-blue-500"
+  aria-label="${selectedIcon}"
+></trinil-${selectedIcon?.toLowerCase()}>`
+                        }[framework]}
                       </code>
                     </pre>
                     <button
                       onClick={handleCopyUsage}
-                      className="absolute right-2 top-2 h-6 w-6 p-1 rounded bg-muted hover:bg-border transition-colors flex items-center justify-center"
+                      className="absolute right-2 top-2 h-6 w-6 p-1 rounded border border-transparent bg-muted hover:border-ring hover:bg-muted/50 transition-colors flex items-center justify-center"
                     >
                       {copiedUsage ? (
                         <TrinilIcons.Check size={16} />

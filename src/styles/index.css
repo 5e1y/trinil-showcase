@@ -25,28 +25,6 @@
   --radius: 0.5rem;
 }
 
-.dark {
-  --background: 0 0% 9%;
-  --foreground: 0 0% 98%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 65%;
-  --popover: 0 0% 9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 0 0% 9%;
-  --card-foreground: 0 0% 98%;
-  --border: 0 0% 15%;
-  --input: 0 0% 15%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --secondary: 0 0% 15%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 0 0% 15%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 63% 31%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 0 0% 65%;
-}
-
 @layer base {
   * {
     @apply border-border;
@@ -75,6 +53,13 @@
         transparent 10px
       );
     background-size: 10px 10px;
+    background-position: 0 0;
+  }
+
+  .grid-pattern-16 {
+    background-image: url('../assets/grid-16.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     background-position: 0 0;
   }
 }

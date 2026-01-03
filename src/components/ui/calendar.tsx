@@ -132,13 +132,13 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
-              <TrinilIcons.ChevronLeft className={cn("size-4", className)} {...props} />
+              <TrinilIcons.ChevronRight className={cn("size-4", className)} {...props} />
             )
           }
 
           if (orientation === "right") {
             return (
-              <TrinilIcons.ChevronRight
+              <TrinilIcons.ChevronLeft
                 className={cn("size-4", className)}
                 {...props}
               />
