@@ -636,7 +636,7 @@ export const iconTags: IconTagsConfig = {
   GalleryPicture: ['Multimedia'],
   Headphones: ['Multimedia'],
   ImagePicture: ['Multimedia'],
-  McrophoneOff: ['Multimedia'],
+  MicrophoneOff: ['Multimedia'],
   Microphone: ['Multimedia'],
   Music: ['Multimedia'],
   Playlist: ['Multimedia'],
