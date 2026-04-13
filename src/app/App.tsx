@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react'
+import ReactDOM from 'react-dom/client'
 import { motion } from 'framer-motion'
 import { toast, Toaster } from 'sonner'
 import * as TrinilIcons from 'trinil-react'
@@ -291,20 +292,18 @@ export default function App() {
     if (!selectedIcon) return
     const IconComponent = TrinilIcons[selectedIcon as keyof typeof TrinilIcons] as any
     if (!IconComponent) return
-    
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    svg.setAttribute('width', '24')
-    svg.setAttribute('height', '24')
-    svg.setAttribute('viewBox', '0 0 24 24')
-    
+
     const tempDiv = document.createElement('div')
-    const root = (window as any).ReactDOM?.createRoot?.(tempDiv)
-    if (root) {
-      root.render(<IconComponent />)
-      setTimeout(() => {
-        const svgContent = tempDiv.querySelector('svg')?.innerHTML || ''
-        svg.innerHTML = svgContent
-        const svgData = new XMLSerializer().serializeToString(svg)
+    document.body.appendChild(tempDiv)
+    const root = ReactDOM.createRoot(tempDiv)
+    root.render(<IconComponent size={24} strokeWidth={strokeWidth[0]} />)
+    setTimeout(() => {
+      const renderedSvg = tempDiv.querySelector('svg')
+      if (renderedSvg) {
+        const clonedSvg = renderedSvg.cloneNode(true) as SVGElement
+        clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+        const svgData = new XMLSerializer().serializeToString(clonedSvg)
+          .replace(/currentColor/g, '#000000')
         const blob = new Blob([svgData], { type: 'image/svg+xml' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -312,8 +311,10 @@ export default function App() {
         a.download = `${selectedIcon}.svg`
         a.click()
         URL.revokeObjectURL(url)
-      }, 100)
-    }
+      }
+      root.unmount()
+      document.body.removeChild(tempDiv)
+    }, 100)
   }
 
   const npmCommands: Record<typeof framework, string> = {
