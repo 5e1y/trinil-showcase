@@ -35,7 +35,16 @@ function isIconComponent(value: unknown): value is IconComponent {
 
 export default function App() {
   // All hooks must be called before any conditional returns
-  const [page, setPage] = useState<'landing' | 'home'>('landing')
+  // Vue initiale pilotable par l'URL (?view=icons) pour l'embed portfolio,
+  // sans changer le défaut du vrai site (landing).
+  const initialPage: 'landing' | 'home' = (() => {
+    try {
+      return new URLSearchParams(window.location.search).get('view') === 'icons' ? 'home' : 'landing'
+    } catch {
+      return 'landing'
+    }
+  })()
+  const [page, setPage] = useState<'landing' | 'home'>(initialPage)
   const isMobile = useAppBreakpoint()
   const iconEntries = useMemo(() => {
     return Object.entries(TrinilIcons).filter(([, component]) => isIconComponent(component))
