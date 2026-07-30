@@ -3,7 +3,7 @@
  * 
  * Auto-generated from trinil-categories.txt
  * 
- * 17 Categories:
+ * 18 Categories:
  * 1. Commerce
  * 2. Connectivity
  * 3. Science & Health
@@ -17,10 +17,11 @@
  * 11. Common Objects
  * 12. Files
  * 13. Nature & Weather
- * 14. Arrows
- * 15. User & Social
- * 16. Movement & Geo
- * 17. General Interface
+ * 14. Fishing
+ * 15. Arrows
+ * 16. User & Social
+ * 17. Movement & Geo
+ * 18. General Interface
  */
 
 export interface IconTagsConfig {
@@ -41,6 +42,7 @@ export const THEMES = [
   'Common Objects',
   'Files',
   'Nature & Weather',
+  'Fishing',
   'Arrows',
   'User & Social',
   'Movement & Geo',
@@ -395,6 +397,7 @@ export const iconTags: IconTagsConfig = {
   Kettle: ['Furniture'],
   KnifeKitchen: ['Furniture'],
   Lamp: ['Furniture'],
+  Lamp1: ['Furniture'],
   LivingRoom: ['Furniture'],
   Luggage: ['Furniture'],
   Microwave: ['Furniture'],
@@ -493,6 +496,7 @@ export const iconTags: IconTagsConfig = {
   LockSettings: ['Dev & IT'],
   Network: ['Dev & IT'],
   Phone: ['Dev & IT'],
+  Phone1: ['Dev & IT'],
   PhoneRotate: ['Dev & IT'],
   PhoneVibrate: ['Dev & IT'],
   PhoneVibrateDisabled: ['Dev & IT'],
@@ -1062,7 +1066,7 @@ export const iconTags: IconTagsConfig = {
   FilterSettings: ['General Interface'],
   Fingerprint: ['General Interface'],
   Fullscreen: ['General Interface'],
-  HandleOrizzontal: ['General Interface'],
+  HandleHorizontal: ['General Interface'],
   HandleVertical: ['General Interface'],
   Handshake: ['General Interface'],
   Heart: ['General Interface'],
@@ -1134,4 +1138,25 @@ export const iconTags: IconTagsConfig = {
   WindowsLogo: ['General Interface'],
   ZoomIn: ['General Interface'],
   ZoomOut: ['General Interface'],
+
+  // Fishing
+  Binoculars: ['Fishing'],
+  Chest: ['Fishing'],
+  ChestLock: ['Fishing'],
+  DivingMask: ['Fishing'],
+  FishCollection: ['Fishing'],
+  FishLarge: ['Fishing'],
+  FishMedium: ['Fishing'],
+  FishSmall: ['Fishing'],
+  FishSmallOff: ['Fishing'],
+  FishTank: ['Fishing'],
+  FishingBoat: ['Fishing'],
+  FishingRod1: ['Fishing'],
+  FishingRod2: ['Fishing'],
+  FishingRod2Cross: ['Fishing'],
+  Harpoon: ['Fishing'],
+  Hook: ['Fishing'],
+  Lobster: ['Fishing'],
+  SharkTeeth: ['Fishing'],
+  Spyglass: ['Fishing'],
 };
